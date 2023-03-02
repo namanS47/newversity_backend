@@ -16,6 +16,7 @@ data class TeacherDetailModel(
         var location: String? = null,
         var title: String? = null,
         var info: String? = null,
+        var tags: List<String>? = null,
         var education: String? = null,
         var designation: String? = null,
         var profileUrl: String? = null,
@@ -37,6 +38,7 @@ object TeacherConverter {
             location = teacherDetailModel.location
             title = teacherDetailModel.title
             info = teacherDetailModel.info
+            tags = teacherDetailModel.tags
             education = teacherDetailModel.education
             designation = teacherDetailModel.designation
             profileUrl = teacherDetailModel.profileUrl
@@ -58,6 +60,7 @@ object TeacherConverter {
             location = teacherDetails.location
             title = teacherDetails.title
             info = teacherDetails.info
+            tags = teacherDetails.tags
             education = teacherDetails.education
             designation = teacherDetails.designation
             profileUrl = teacherDetails.profileUrl

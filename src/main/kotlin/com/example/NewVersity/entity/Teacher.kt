@@ -27,6 +27,8 @@ class TeacherDetails(
 
         var info                        : String?                       = null,
 
+        var tags                        :List<String>?                  = null,
+
         var education                   :String?                        = null,
 
         var designation                   :String?                        = null,

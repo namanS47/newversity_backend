@@ -9,11 +9,17 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 @Service
-class TeacherServices(@Autowired val teacherRepository: TeacherRepository) {
+class TeacherServices(
+        @Autowired val teacherRepository: TeacherRepository,
+        @Autowired val tagsService: TagsService
+) {
     fun save(teacherDetailModel: TeacherDetailModel): ResponseEntity<*> {
         return if(isTeacherValid(teacherDetailModel)) {
             if(!teacherRepository.findByTeacherId(teacherDetailModel.teacherId ?: "").isPresent){
                 val teacherDetails = teacherRepository.save(TeacherConverter.toEntity(teacherDetailModel))
+                //TODO: Make below line run on separate thread
+                tagsService.updateTagList(teacherDetailModel.tags ?: arrayListOf(), arrayListOf(), teacherDetailModel.teacherId ?: "")
+//                tagsService.testing()
                 ResponseEntity.ok(TeacherConverter.toModel(teacherDetails))
             } else {
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Teacher Already Exist"))
@@ -47,6 +53,10 @@ class TeacherServices(@Autowired val teacherRepository: TeacherRepository) {
             }
             teacherDetailModel.info?.let {
                 teacher.info = it
+            }
+            teacherDetailModel.tags?.let {
+                tagsService.updateTagList(it, teacher.tags ?: arrayListOf(), teacher.teacherId ?: "")
+                teacher.tags = it
             }
             teacherDetailModel.education?.let {
                 teacher.education = it
