@@ -23,6 +23,10 @@ class TeacherDetails(
 
         var location                    : String?                       = null,
 
+        var gender                      : String?                       = null,
+
+        var age                         : String?                       = null,
+
         var title                       : String?                       = null,
 
         var info                        : String?                       = null,

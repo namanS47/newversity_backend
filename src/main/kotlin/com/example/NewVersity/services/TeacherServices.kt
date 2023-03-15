@@ -1,5 +1,6 @@
 package com.example.NewVersity.services
 
+import com.example.NewVersity.entity.TeacherDetails
 import com.example.NewVersity.model.TeacherConverter
 import com.example.NewVersity.model.TeacherDetailModel
 import com.example.NewVersity.repository.TeacherRepository
@@ -13,6 +14,15 @@ class TeacherServices(
         @Autowired val teacherRepository: TeacherRepository,
         @Autowired val tagsService: TagsService
 ) {
+
+    fun addTeacher(teacherDetailModel: TeacherDetailModel, teacherId: String): ResponseEntity<*> {
+        val teacherDetailsEntity = teacherRepository.findByTeacherId(teacherId)
+        return if(teacherDetailsEntity.isPresent) {
+            updateTeacher(teacherDetailModel, teacherId)
+        } else {
+            save(teacherDetailModel)
+        }
+    }
     fun save(teacherDetailModel: TeacherDetailModel): ResponseEntity<*> {
         return if(isTeacherValid(teacherDetailModel)) {
             if(!teacherRepository.findByTeacherId(teacherDetailModel.teacherId ?: "").isPresent){
@@ -38,7 +48,7 @@ class TeacherServices(
         }
     }
 
-    fun updateTeacher(teacherDetailModel: TeacherDetailModel, teacherId: String): ResponseEntity<Boolean> {
+    fun updateTeacher(teacherDetailModel: TeacherDetailModel, teacherId: String): ResponseEntity<*> {
         val teacherDetailsEntity = teacherRepository.findByTeacherId(teacherId)
         if(teacherDetailsEntity.isPresent) {
             var teacher = teacherDetailsEntity.get()
@@ -77,9 +87,9 @@ class TeacherServices(
                 teacher.language = it
             }
             teacher = teacherRepository.save(teacher)
-            return ResponseEntity.ok(true)
+            return ResponseEntity.ok(TeacherConverter.toModel(teacher))
         } else {
-            return ResponseEntity.ok(false)
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("status" to "Teacher Doesn't Exist"))
         }
     }
 
