@@ -8,6 +8,9 @@ import kotlin.collections.HashMap
 
 @Document(collection = "teacher")
 class TeacherDetails(
+        @Field("user_id")
+        var userId                      :String?                         = null,
+
         @Field("teacher_id")
         var teacherId                   :String?                        = null,
 
@@ -31,6 +34,9 @@ class TeacherDetails(
 
         var info                        : String?                       = null,
 
+        @Field("uploaded_documents")
+        var uploadedDocuments           :List<String>?                  = null,
+
         var tags                        :List<String>?                  = null,
 
         var education                   :String?                        = null,
@@ -46,5 +52,8 @@ class TeacherDetails(
         @Field("session_pricing")
         var sessionPricing              : HashMap<String, Double>?      = null,
 
-        var language                    : List<String>?                 = null
+        var language                    : List<String>?                 = null,
+
+        @Field("is_new")
+        var isNew                       : Boolean?                       = null,
 ): AppEntity()

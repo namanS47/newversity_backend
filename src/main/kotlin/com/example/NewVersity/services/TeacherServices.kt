@@ -26,6 +26,7 @@ class TeacherServices(
     fun save(teacherDetailModel: TeacherDetailModel): ResponseEntity<*> {
         return if(isTeacherValid(teacherDetailModel)) {
             if(!teacherRepository.findByTeacherId(teacherDetailModel.teacherId ?: "").isPresent){
+                teacherDetailModel.isNew = true
                 val teacherDetails = teacherRepository.save(TeacherConverter.toEntity(teacherDetailModel))
                 //TODO: Make below line run on separate thread
                 tagsService.updateTagList(teacherDetailModel.tags ?: arrayListOf(), arrayListOf(), teacherDetailModel.teacherId ?: "")
@@ -86,6 +87,7 @@ class TeacherServices(
             teacherDetailModel.language?.let {
                 teacher.language = it
             }
+            teacherDetailModel.isNew = false
             teacher = teacherRepository.save(teacher)
             return ResponseEntity.ok(TeacherConverter.toModel(teacher))
         } else {

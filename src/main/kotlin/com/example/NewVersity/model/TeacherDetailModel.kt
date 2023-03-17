@@ -8,6 +8,7 @@ import java.util.*
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
 data class TeacherDetailModel(
+        var userId: String? = null,
         var teacherId: String? = null,
         var name: String? = null,
         var mobileNumber: String? = null,
@@ -18,13 +19,15 @@ data class TeacherDetailModel(
         var age: String? = null,
         var title: String? = null,
         var info: String? = null,
+        var uploadedDocuments: List<String>? = null,
         var tags: List<String>? = null,
         var education: String? = null,
         var designation: String? = null,
         var profileUrl: String? = null,
         var profilePictureUrl: String? = null,
         var sessionPricing: HashMap<String, Double>? = null,
-        var language: List<String>? = null
+        var language: List<String>? = null,
+        var isNew: Boolean? = null
 )
 
 object TeacherConverter {
@@ -32,6 +35,7 @@ object TeacherConverter {
         val entity= TeacherDetails()
 
         entity.apply {
+            userId = teacherDetailModel.userId
             teacherId = teacherDetailModel.teacherId
             name = teacherDetailModel.name
             mobileNumber = teacherDetailModel.mobileNumber
@@ -42,6 +46,7 @@ object TeacherConverter {
             age = teacherDetailModel.age
             title = teacherDetailModel.title
             info = teacherDetailModel.info
+            uploadedDocuments = teacherDetailModel.uploadedDocuments
             tags = teacherDetailModel.tags
             education = teacherDetailModel.education
             designation = teacherDetailModel.designation
@@ -49,6 +54,7 @@ object TeacherConverter {
             profilePictureUrl = teacherDetailModel.profilePictureUrl
             sessionPricing = teacherDetailModel.sessionPricing
             language = teacherDetailModel.language
+            isNew = teacherDetailModel.isNew
         }
         return entity
     }
@@ -66,6 +72,7 @@ object TeacherConverter {
             age = teacherDetails.age
             title = teacherDetails.title
             info = teacherDetails.info
+            uploadedDocuments = teacherDetails.uploadedDocuments
             tags = teacherDetails.tags
             education = teacherDetails.education
             designation = teacherDetails.designation
@@ -73,6 +80,7 @@ object TeacherConverter {
             profilePictureUrl = teacherDetails.profilePictureUrl
             sessionPricing = teacherDetails.sessionPricing
             language = teacherDetails.language
+            isNew = teacherDetails.isNew
         }
         return model
     }
