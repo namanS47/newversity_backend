@@ -41,7 +41,7 @@ class TeacherDetails(
 
         var education                   :String?                        = null,
 
-        var designation                   :String?                        = null,
+        var designation                 :String?                        = null,
 
         @Field("profile_url")
         var profileUrl                  : String?                       = null,

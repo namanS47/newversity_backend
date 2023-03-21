@@ -1,6 +1,6 @@
-package com.example.NewVersity.services
+package com.example.NewVersity.services.teacher
 
-import com.example.NewVersity.entity.TeacherDetails
+import com.example.NewVersity.model.EmptyJsonResponse
 import com.example.NewVersity.model.TeacherConverter
 import com.example.NewVersity.model.TeacherDetailModel
 import com.example.NewVersity.repository.TeacherRepository
@@ -24,8 +24,8 @@ class TeacherServices(
         }
     }
     fun save(teacherDetailModel: TeacherDetailModel): ResponseEntity<*> {
-        return if(isTeacherValid(teacherDetailModel)) {
-            if(!teacherRepository.findByTeacherId(teacherDetailModel.teacherId ?: "").isPresent){
+//        return if(isTeacherValid(teacherDetailModel)) {
+            return if(!teacherRepository.findByTeacherId(teacherDetailModel.teacherId ?: "").isPresent){
                 teacherDetailModel.isNew = true
                 val teacherDetails = teacherRepository.save(TeacherConverter.toEntity(teacherDetailModel))
                 //TODO: Make below line run on separate thread
@@ -35,9 +35,9 @@ class TeacherServices(
             } else {
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Teacher Already Exist"))
             }
-        } else {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Missing Necessary Details"))
-        }
+//        } else {
+//            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Missing Necessary Details"))
+//        }
     }
 
     fun getTeacher(teacherId: String) : ResponseEntity<*> {
@@ -45,7 +45,8 @@ class TeacherServices(
         return if(teacherDetails.isPresent) {
             ResponseEntity.ok(TeacherConverter.toModel(teacherDetails.get()))
         } else {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("status" to "Teacher Doesn't Exist"))
+//            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("status" to "Teacher Doesn't Exist"))
+            ResponseEntity.ok(null)
         }
     }
 

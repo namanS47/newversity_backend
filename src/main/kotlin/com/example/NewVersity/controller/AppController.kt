@@ -1,8 +1,10 @@
 package com.example.NewVersity.controller
 
 import com.example.NewVersity.model.TeacherDetailModel
-import com.example.NewVersity.services.TeacherServices
+import com.example.NewVersity.model.TeacherExperienceModel
+import com.example.NewVersity.services.teacher.TeacherServices
 import com.example.NewVersity.services.room.RoomService
+import com.example.NewVersity.services.teacher.TeacherExperienceService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -12,7 +14,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/")
 class AppController(
         @Autowired val teacherServices: TeacherServices,
-        @Autowired val roomService: RoomService
+        @Autowired val roomService: RoomService,
+        @Autowired val teacherExperienceService: TeacherExperienceService
 ) {
 
     @GetMapping("/springBoot")
@@ -41,5 +44,15 @@ class AppController(
     @PutMapping("/teacher")
     fun updateTeacher(@RequestBody teacherDetailModel: TeacherDetailModel, @RequestHeader teacherId: String): ResponseEntity<*> {
         return teacherServices.updateTeacher(teacherDetailModel, teacherId);
+    }
+
+    @PostMapping("/teacher/experience")
+    fun addTeacherExperience(@RequestBody teacherExperienceModel: TeacherExperienceModel): ResponseEntity<*> {
+        return teacherExperienceService.addTeacherExperience(teacherExperienceModel)
+    }
+
+    @GetMapping("/teacher/experience")
+    fun getAllTeacherExperience(@RequestHeader teacherId: String) : ResponseEntity<*> {
+        return teacherExperienceService.getAllTeacherExperience(teacherId)
     }
 }

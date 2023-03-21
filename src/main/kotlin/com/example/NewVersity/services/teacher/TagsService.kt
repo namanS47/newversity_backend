@@ -1,7 +1,7 @@
-package com.example.NewVersity.services
+package com.example.NewVersity.services.teacher
 
 import com.example.NewVersity.entity.Tags
-import com.example.NewVersity.model.TagsRepository
+import com.example.NewVersity.repository.TagsRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service

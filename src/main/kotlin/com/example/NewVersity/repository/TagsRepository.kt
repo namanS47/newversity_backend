@@ -1,4 +1,4 @@
-package com.example.NewVersity.model
+package com.example.NewVersity.repository
 
 import com.example.NewVersity.entity.Tags
 import org.springframework.data.mongodb.repository.MongoRepository
