@@ -70,9 +70,14 @@ class AppController(
         return ResponseEntity.ok(tagsService.getAllTagsWithTeacherId(teacherId))
     }
 
-    @PostMapping("/teacher/addTags")
+    @PostMapping("/tags")
     fun addTagsForAdmin(@RequestBody tagList: List<TagModel>) : ResponseEntity<*> {
         tagsService.mapNewTags(tagList, null)
         return ResponseEntity.ok(true)
+    }
+
+    @GetMapping("/tags")
+    fun getAllTags(): ResponseEntity<*> {
+        return ResponseEntity.ok(tagsService.getAllTags())
     }
 }

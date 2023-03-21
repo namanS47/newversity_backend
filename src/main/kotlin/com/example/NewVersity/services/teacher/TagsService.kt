@@ -30,6 +30,10 @@ class TagsService(
         mapNewTags(tagList, teacherId)
     }
 
+    fun getAllTags(): List<Tags> {
+        return tagsRepository.findAll()
+    }
+
     fun getAllTagsWithTeacherId(teacherId: String): List<Tags> {
         val tagsList = tagsRepository.findAll()
         val filteredTagsList = tagsList.filter {
