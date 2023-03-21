@@ -24,20 +24,13 @@ class TeacherServices(
         }
     }
     fun save(teacherDetailModel: TeacherDetailModel): ResponseEntity<*> {
-//        return if(isTeacherValid(teacherDetailModel)) {
             return if(!teacherRepository.findByTeacherId(teacherDetailModel.teacherId ?: "").isPresent){
                 teacherDetailModel.isNew = true
                 val teacherDetails = teacherRepository.save(TeacherConverter.toEntity(teacherDetailModel))
-                //TODO: Make below line run on separate thread
-                tagsService.updateTagList(teacherDetailModel.tags ?: arrayListOf(), arrayListOf(), teacherDetailModel.teacherId ?: "")
-//                tagsService.testing()
                 ResponseEntity.ok(TeacherConverter.toModel(teacherDetails))
             } else {
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Teacher Already Exist"))
             }
-//        } else {
-//            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Missing Necessary Details"))
-//        }
     }
 
     fun getTeacher(teacherId: String) : ResponseEntity<*> {
@@ -66,10 +59,10 @@ class TeacherServices(
             teacherDetailModel.info?.let {
                 teacher.info = it
             }
-            teacherDetailModel.tags?.let {
-                tagsService.updateTagList(it, teacher.tags ?: arrayListOf(), teacher.teacherId ?: "")
-                teacher.tags = it
-            }
+//            teacherDetailModel.tags?.let {
+//                tagsService.updateTagList(it, teacher.tags ?: arrayListOf(), teacher.teacherId ?: "")
+//                teacher.tags = it
+//            }
             teacherDetailModel.education?.let {
                 teacher.education = it
             }

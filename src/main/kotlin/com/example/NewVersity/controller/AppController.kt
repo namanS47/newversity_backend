@@ -1,9 +1,11 @@
 package com.example.NewVersity.controller
 
+import com.example.NewVersity.model.TagModel
 import com.example.NewVersity.model.TeacherDetailModel
 import com.example.NewVersity.model.TeacherExperienceModel
 import com.example.NewVersity.services.teacher.TeacherServices
 import com.example.NewVersity.services.room.RoomService
+import com.example.NewVersity.services.teacher.TagsService
 import com.example.NewVersity.services.teacher.TeacherExperienceService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -15,7 +17,8 @@ import org.springframework.web.bind.annotation.*
 class AppController(
         @Autowired val teacherServices: TeacherServices,
         @Autowired val roomService: RoomService,
-        @Autowired val teacherExperienceService: TeacherExperienceService
+        @Autowired val teacherExperienceService: TeacherExperienceService,
+        @Autowired val tagsService: TagsService
 ) {
 
     @GetMapping("/springBoot")
@@ -54,5 +57,22 @@ class AppController(
     @GetMapping("/teacher/experience")
     fun getAllTeacherExperience(@RequestHeader teacherId: String) : ResponseEntity<*> {
         return teacherExperienceService.getAllTeacherExperience(teacherId)
+    }
+
+    @PostMapping("/teacher/tags")
+    fun addTags(@RequestHeader teacherId: String, @RequestBody tagList: List<TagModel>) : ResponseEntity<*> {
+        tagsService.updateTagList(tagList, teacherId)
+        return ResponseEntity.ok(true)
+    }
+
+    @GetMapping("/teacher/tags")
+    fun getTagsWithTeacherId(@RequestHeader teacherId: String): ResponseEntity<*> {
+        return ResponseEntity.ok(tagsService.getAllTagsWithTeacherId(teacherId))
+    }
+
+    @PostMapping("/teacher/addTags")
+    fun addTagsForAdmin(@RequestBody tagList: List<TagModel>) : ResponseEntity<*> {
+        tagsService.mapNewTags(tagList, null)
+        return ResponseEntity.ok(true)
     }
 }

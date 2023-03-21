@@ -1,6 +1,7 @@
 package com.example.NewVersity.services.teacher
 
 import com.example.NewVersity.entity.Tags
+import com.example.NewVersity.model.TagModel
 import com.example.NewVersity.repository.TagsRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Async
@@ -11,37 +12,55 @@ class TagsService(
         @Autowired val tagsRepository: TagsRepository
 ) {
     @Async
-    fun updateTagList(updatedTags: List<String>, existingTags: List<String>, teacherId: String) {
-        val newTagsToMap = updatedTags.filter {
-            !existingTags.contains(it)
+    fun updateTagList(tagList: List<TagModel>, teacherId: String) {
+        val existingTagList = getAllTagsWithTeacherId(teacherId)
+        existingTagList.forEach { existingTag->
+            var removeTeacherIdFromTag = true
+            tagList.forEach { newTag->
+                if(newTag.tagName == existingTag.tagName){
+                    removeTeacherIdFromTag = false
+                }
+            }
+            if(removeTeacherIdFromTag) {
+                existingTag.teacherIdList?.remove(teacherId)
+                tagsRepository.save(existingTag)
+            }
         }
 
-        val tagsToRemove = existingTags.filter {
-            !updatedTags.contains(it)
-        }
-
-        mapNewTagsWithTeacher(newTagsToMap, teacherId)
-        removeOldTagsMappedWithTeacher(tagsToRemove, teacherId)
+        mapNewTags(tagList, teacherId)
     }
 
-    private fun mapNewTagsWithTeacher(tagList: List<String>, teacherId: String) {
-        tagList.forEach {name->
-            val tag = tagsRepository.findByTagName(name)
-            if(tag.isPresent) {
-                val list = tag.get().teacherIdList ?: ArrayList()
-                if(!list.contains(teacherId)){
-                    list.add(teacherId)
+    fun getAllTagsWithTeacherId(teacherId: String): List<Tags> {
+        val tagsList = tagsRepository.findAll()
+        val filteredTagsList = tagsList.filter {
+            it.teacherIdList?.contains(teacherId) ?: false
+        }
+        return filteredTagsList
+    }
+
+    fun mapNewTags(tagList: List<TagModel>, teacherId: String?) {
+        tagList.forEach {
+            val tag = it.tagName?.let { it1 -> tagsRepository.findByTagName(it1) }
+            if (tag != null) {
+                if(tag.isPresent) {
+                    val list = tag.get().teacherIdList ?: ArrayList()
+                    if (teacherId != null) {
+                        list.add(teacherId)
+                    }
                     tagsRepository.save(tag.get())
+                } else {
+                    val newTag = Tags()
+                    val teacherList= mutableSetOf<String>()
+                    if (teacherId != null) {
+                        teacherList.add(teacherId)
+                    }
+                    newTag.apply {
+                        tagName = it.tagName
+                        teacherIdList = teacherList
+                        tagCategory = it.tagCategory
+                    }
+                    tagsRepository.save(newTag)
                 }
-            } else {
-                val newTag = Tags()
-                val teacherList = ArrayList<String>()
-                teacherList.add(teacherId)
-                newTag.apply {
-                    tagName = name
-                    teacherIdList = teacherList
-                }
-                tagsRepository.save(newTag)
             }
         }
     }

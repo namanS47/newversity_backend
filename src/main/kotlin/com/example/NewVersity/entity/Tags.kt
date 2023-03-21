@@ -8,6 +8,11 @@ import org.springframework.data.mongodb.core.mapping.Field
 class Tags (
         @Indexed
         @Field("tag_name")
-        var tagName: String = "",
-        var teacherIdList: ArrayList<String>?    = null
+        var tagName: String? = null,
+
+        @Field("teacher_id_list")
+        var teacherIdList: MutableSet<String>?    = null,
+
+        @Field("tag_category")
+        var tagCategory: String? = null
 ): AppEntity()
