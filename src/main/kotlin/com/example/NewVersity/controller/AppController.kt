@@ -2,10 +2,12 @@ package com.example.NewVersity.controller
 
 import com.example.NewVersity.model.TagModel
 import com.example.NewVersity.model.TeacherDetailModel
+import com.example.NewVersity.model.TeacherEducationModel
 import com.example.NewVersity.model.TeacherExperienceModel
 import com.example.NewVersity.services.teacher.TeacherServices
 import com.example.NewVersity.services.room.RoomService
 import com.example.NewVersity.services.teacher.TagsService
+import com.example.NewVersity.services.teacher.TeacherEducationService
 import com.example.NewVersity.services.teacher.TeacherExperienceService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -18,10 +20,11 @@ class AppController(
         @Autowired val teacherServices: TeacherServices,
         @Autowired val roomService: RoomService,
         @Autowired val teacherExperienceService: TeacherExperienceService,
-        @Autowired val tagsService: TagsService
+        @Autowired val tagsService: TagsService,
+        @Autowired val teacherEducationService: TeacherEducationService
 ) {
 
-    @GetMapping("/springBoot")
+    @GetMapping("/")
     fun getHello(): String = "Hello Naman"
 
     @GetMapping("/spring")
@@ -57,6 +60,16 @@ class AppController(
     @GetMapping("/teacher/experience")
     fun getAllTeacherExperience(@RequestHeader teacherId: String) : ResponseEntity<*> {
         return teacherExperienceService.getAllTeacherExperience(teacherId)
+    }
+
+    @PostMapping("/teacher/education")
+    fun addEducation(@RequestBody teacherEducationModel: TeacherEducationModel): ResponseEntity<*> {
+        return teacherEducationService.addTeacherEducationDetails(teacherEducationModel)
+    }
+
+    @GetMapping("teacher/education")
+    fun getAllTeacherEducationDetails(@RequestHeader teacherId: String) : ResponseEntity<*> {
+        return teacherEducationService.getAllTeacherEducationDetails(teacherId)
     }
 
     @PostMapping("/teacher/tags")
