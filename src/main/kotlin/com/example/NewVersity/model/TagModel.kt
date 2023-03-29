@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+class TagListModel(
+        var tagModelList: List<TagModel>? = null
+)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
 class TagModel (
         var tagName: String? = null,
         var tagCategory: String? = null

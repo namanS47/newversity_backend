@@ -1,14 +1,8 @@
 package com.example.NewVersity.controller
 
-import com.example.NewVersity.model.TagModel
-import com.example.NewVersity.model.TeacherDetailModel
-import com.example.NewVersity.model.TeacherEducationModel
-import com.example.NewVersity.model.TeacherExperienceModel
-import com.example.NewVersity.services.teacher.TeacherServices
+import com.example.NewVersity.model.*
 import com.example.NewVersity.services.room.RoomService
-import com.example.NewVersity.services.teacher.TagsService
-import com.example.NewVersity.services.teacher.TeacherEducationService
-import com.example.NewVersity.services.teacher.TeacherExperienceService
+import com.example.NewVersity.services.teacher.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -21,7 +15,8 @@ class AppController(
         @Autowired val roomService: RoomService,
         @Autowired val teacherExperienceService: TeacherExperienceService,
         @Autowired val tagsService: TagsService,
-        @Autowired val teacherEducationService: TeacherEducationService
+        @Autowired val teacherEducationService: TeacherEducationService,
+        @Autowired val availabilityService: AvailabilityService
 ) {
 
     @GetMapping("/")
@@ -73,8 +68,8 @@ class AppController(
     }
 
     @PostMapping("/teacher/tags")
-    fun addTags(@RequestHeader teacherId: String, @RequestBody tagList: List<TagModel>) : ResponseEntity<*> {
-        tagsService.updateTagList(tagList, teacherId)
+    fun addTags(@RequestHeader teacherId: String, @RequestBody tagListModel: TagListModel) : ResponseEntity<*> {
+        tagsService.updateTagList(tagListModel.tagModelList, teacherId)
         return ResponseEntity.ok(true)
     }
 
@@ -84,13 +79,28 @@ class AppController(
     }
 
     @PostMapping("/tags")
-    fun addTagsForAdmin(@RequestBody tagList: List<TagModel>) : ResponseEntity<*> {
-        tagsService.mapNewTags(tagList, null)
+    fun addTagsForAdmin(@RequestBody tagListModel: TagListModel) : ResponseEntity<*> {
+        tagsService.mapNewTags(tagListModel.tagModelList, null)
         return ResponseEntity.ok(true)
     }
 
     @GetMapping("/tags")
     fun getAllTags(): ResponseEntity<*> {
         return ResponseEntity.ok(tagsService.getAllTags())
+    }
+
+    @PostMapping("/teacher/availability")
+    fun addAvailability(@RequestBody availabilityListModel: AvailabilityListModel) : ResponseEntity<*> {
+        return availabilityService.addAvailability(availabilityListModel.availabilityList)
+    }
+
+    @GetMapping("/teacher/availability")
+    fun getAvailability(@RequestBody availabilityRequestModel: AvailabilityRequestModel): ResponseEntity<*> {
+        return availabilityService.getAllAvailabilityByTeacherIdAndDate(availabilityRequestModel)
+    }
+
+    @DeleteMapping("/teacher/availability")
+    fun deleteAvailability(@RequestHeader id: String) : ResponseEntity<*> {
+        return availabilityService.removeAvailability(id)
     }
 }

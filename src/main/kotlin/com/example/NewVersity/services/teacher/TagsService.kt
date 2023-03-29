@@ -12,11 +12,11 @@ class TagsService(
         @Autowired val tagsRepository: TagsRepository
 ) {
     @Async
-    fun updateTagList(tagList: List<TagModel>, teacherId: String) {
+    fun updateTagList(tagList: List<TagModel>?, teacherId: String) {
         val existingTagList = getAllTagsWithTeacherId(teacherId)
         existingTagList.forEach { existingTag->
             var removeTeacherIdFromTag = true
-            tagList.forEach { newTag->
+            tagList?.forEach { newTag->
                 if(newTag.tagName == existingTag.tagName){
                     removeTeacherIdFromTag = false
                 }
@@ -42,8 +42,8 @@ class TagsService(
         return filteredTagsList
     }
 
-    fun mapNewTags(tagList: List<TagModel>, teacherId: String?) {
-        tagList.forEach {
+    fun mapNewTags(tagList: List<TagModel>?, teacherId: String?) {
+        tagList?.forEach {
             val tag = it.tagName?.let { it1 -> tagsRepository.findByTagName(it1) }
             if (tag != null) {
                 if(tag.isPresent) {
