@@ -1,5 +1,7 @@
 package com.example.newversity.model
 
+import com.example.newversity.entity.Tags
+import com.example.newversity.entity.TeacherTagDetails
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 
@@ -10,26 +12,41 @@ class TagListModel(
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
 class TagModel (
         var tagName: String? = null,
-        var tagCategory: String? = null
+        var tagCategory: String? = null,
+        var teacherTagDetailList: MutableMap<String, TeacherTagDetails>? = null,
+        var teacherTagDetails: TeacherTagDetails? = null,
 )
 
-//object TagConvertor {
+
+
+object TagConvertor {
 //    fun toEntity(tagModel: TagModel, teacherIds: Set<String>) : Tags {
 //        val entity = Tags()
 //        entity.apply {
 //            tagName = tagModel.tagName
-//            teacherIdList = teacherIds
+//            teacherTagDetailList = teacherIds
 //            tagCategory = tagModel.tagCategory
 //        }
 //        return entity
 //    }
-//
-//    fun toModel(tags: Tags): TagModel {
-//        val model = TagModel()
-//        model.apply {
-//            tagName = tags.tagName
-//            tagCategory = tags.tagCategory
-//        }
-//        return model
-//    }
-//}
+
+    fun toAllTagModel(tags: Tags): TagModel {
+        val model = TagModel()
+        model.apply {
+            tagName = tags.tagName
+            tagCategory = tags.tagCategory
+            teacherTagDetailList = tags.teacherTagDetailList
+        }
+        return model
+    }
+
+    fun toTeacherTagModel(tags: Tags): TagModel {
+        val model = TagModel()
+        model.apply {
+            tagName = tags.tagName
+            tagCategory = tags.tagCategory
+//            teacherTagDetails = tags.teacherTagDetailList
+        }
+        return model
+    }
+}

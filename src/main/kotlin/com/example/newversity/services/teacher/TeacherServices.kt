@@ -1,5 +1,6 @@
 package com.example.newversity.services.teacher
 
+import com.example.newversity.aws.s3.service.AwsS3Service
 import com.example.newversity.model.TeacherConverter
 import com.example.newversity.model.TeacherDetailModel
 import com.example.newversity.repository.TeacherRepository
@@ -7,11 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
+import java.lang.Exception
 
 @Service
 class TeacherServices(
         @Autowired val teacherRepository: TeacherRepository,
-        @Autowired val tagsService: TagsService
+        @Autowired val tagsService: TagsService,
+        @Autowired val awsS3Service: AwsS3Service
 ) {
 
     fun addTeacher(teacherDetailModel: TeacherDetailModel, teacherId: String): ResponseEntity<*> {
@@ -85,6 +89,15 @@ class TeacherServices(
             return ResponseEntity.ok(TeacherConverter.toModel(teacher))
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("status" to "Teacher Doesn't Exist"))
+        }
+    }
+
+    fun saveProfilePicture(file: MultipartFile, id: String): ResponseEntity<*> {
+        return try {
+            val fileUrl = awsS3Service.saveFile(file)
+            updateTeacher(TeacherDetailModel(profilePictureUrl = fileUrl), id)
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Unable to upload file"))
         }
     }
 

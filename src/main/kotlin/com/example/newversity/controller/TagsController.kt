@@ -1,0 +1,45 @@
+package com.example.newversity.controller
+
+import com.example.newversity.aws.s3.service.AwsS3Service
+import com.example.newversity.model.TagListModel
+import com.example.newversity.services.teacher.TagsService
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
+
+@RestController
+@RequestMapping("/")
+class TagsController(
+        @Autowired val tagsService: TagsService
+) {
+    @PostMapping("/teacher/tags")
+    fun addTags(@RequestHeader teacherId: String, @RequestBody tagListModel: TagListModel, @RequestParam category: String): ResponseEntity<*> {
+        tagsService.updateTagList(tagListModel.tagModelList, teacherId, category)
+        return ResponseEntity.ok(true)
+    }
+
+    @GetMapping("/teacher/tags")
+    fun getTagsWithTeacherId(@RequestHeader teacherId: String): ResponseEntity<*> {
+        return tagsService.getAllTagsModelWithTeacherId(teacherId)
+    }
+
+    @PostMapping("/tags")
+    fun addTagsForAdmin(@RequestBody tagListModel: TagListModel): ResponseEntity<*> {
+        tagsService.mapNewTags(tagListModel.tagModelList, null)
+        return ResponseEntity.ok(true)
+    }
+
+    @GetMapping("/tags")
+    fun getAllTags(): ResponseEntity<*> {
+        return tagsService.getAllTags()
+    }
+
+    @PostMapping("/teacher/tags/verify")
+    fun uploadDocumentProof(
+            @RequestPart("file") file: MultipartFile,
+            @RequestPart("teacherId") teacherId: String,
+            @RequestPart("tag") tag: String): ResponseEntity<*> {
+        return tagsService.addTagProofForTeacher(file, tag, teacherId)
+    }
+}

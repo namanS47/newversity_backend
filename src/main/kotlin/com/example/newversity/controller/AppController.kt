@@ -1,11 +1,13 @@
 package com.example.newversity.controller
 
+import com.example.newversity.aws.s3.service.AwsS3Service
 import com.example.newversity.model.*
 import com.example.newversity.services.room.RoomService
 import com.example.newversity.services.teacher.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 
 @RestController
@@ -14,7 +16,6 @@ class AppController(
         @Autowired val teacherServices: TeacherServices,
         @Autowired val roomService: RoomService,
         @Autowired val teacherExperienceService: TeacherExperienceService,
-        @Autowired val tagsService: TagsService,
         @Autowired val teacherEducationService: TeacherEducationService,
         @Autowired val availabilityService: AvailabilityService
 ) {
@@ -67,28 +68,6 @@ class AppController(
         return teacherEducationService.getAllTeacherEducationDetails(teacherId)
     }
 
-    @PostMapping("/teacher/tags")
-    fun addTags(@RequestHeader teacherId: String, @RequestBody tagListModel: TagListModel) : ResponseEntity<*> {
-        tagsService.updateTagList(tagListModel.tagModelList, teacherId)
-        return ResponseEntity.ok(true)
-    }
-
-    @GetMapping("/teacher/tags")
-    fun getTagsWithTeacherId(@RequestHeader teacherId: String): ResponseEntity<*> {
-        return ResponseEntity.ok(tagsService.getAllTagsWithTeacherId(teacherId))
-    }
-
-    @PostMapping("/tags")
-    fun addTagsForAdmin(@RequestBody tagListModel: TagListModel) : ResponseEntity<*> {
-        tagsService.mapNewTags(tagListModel.tagModelList, null)
-        return ResponseEntity.ok(true)
-    }
-
-    @GetMapping("/tags")
-    fun getAllTags(): ResponseEntity<*> {
-        return ResponseEntity.ok(tagsService.getAllTags())
-    }
-
     @PostMapping("/teacher/availability")
     fun addAvailability(@RequestBody availabilityListModel: AvailabilityListModel) : ResponseEntity<*> {
         return availabilityService.addAvailability(availabilityListModel.availabilityList)
@@ -102,5 +81,10 @@ class AppController(
     @DeleteMapping("/teacher/availability")
     fun deleteAvailability(@RequestHeader id: String) : ResponseEntity<*> {
         return availabilityService.removeAvailability(id)
+    }
+
+    @PostMapping("/teacher/profileImage")
+    fun uploadDocsToS3(@RequestPart("file") file: MultipartFile, teacherId: String) : ResponseEntity<*> {
+        return teacherServices.saveProfilePicture(file, teacherId)
     }
 }

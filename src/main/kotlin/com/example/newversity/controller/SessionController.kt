@@ -1,6 +1,5 @@
 package com.example.newversity.controller
 
-import com.amazonaws.Response
 import com.example.newversity.model.SessionModel
 import com.example.newversity.services.teacher.SessionService
 import org.springframework.beans.factory.annotation.Autowired
