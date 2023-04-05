@@ -1,5 +1,6 @@
 package com.example.newversity.services.teacher
 
+import com.example.newversity.entity.TeacherExperience
 import com.example.newversity.model.TeacherExperienceConverter
 import com.example.newversity.model.TeacherExperienceModel
 import com.example.newversity.repository.TeacherExperienceRepository
@@ -21,8 +22,7 @@ class TeacherExperienceService(
         return ResponseEntity.ok(true)
     }
 
-    fun getAllExperienceByTeacherId(teacherId: String): ResponseEntity<*> {
-        val teacherExperiences = teacherExperienceRepository.findAllByTeacherId(teacherId)
-        return ResponseEntity.ok(teacherExperiences.map { TeacherExperienceConverter.toModel(it) })
+    fun getAllExperienceListByTeacherId(teacherId: String): List<TeacherExperience> {
+        return teacherExperienceRepository.findAllByTeacherId(teacherId)
     }
 }

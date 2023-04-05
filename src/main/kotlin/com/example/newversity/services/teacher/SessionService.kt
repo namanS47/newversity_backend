@@ -56,6 +56,15 @@ class SessionService(
         }
     }
 
+    fun getSessionById(id: String): ResponseEntity<*> {
+        val session = sessionRepository.findById(id)
+        return if(session.isPresent) {
+            ResponseEntity.ok().body(SessionConvertor.toModel(session.get()))
+        } else {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Session Id doesn't exist"))
+        }
+    }
+
     fun getUpcomingSessionByTeacherId(teacherId: String): ResponseEntity<*> {
         val sessionList = sessionRepository.findAllByTeacherId(teacherId)
         val currentTime = Date()

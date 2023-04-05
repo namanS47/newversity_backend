@@ -87,4 +87,9 @@ class AppController(
     fun uploadDocsToS3(@RequestPart("file") file: MultipartFile, teacherId: String) : ResponseEntity<*> {
         return teacherServices.saveProfilePicture(file, teacherId)
     }
+
+    @GetMapping("teacher/completion")
+    fun getTeacherCompletionPercentage(@RequestHeader teacherId: String): ResponseEntity<*> {
+        return teacherServices.getTeacherProfileCompletionPercentage(teacherId)
+    }
 }

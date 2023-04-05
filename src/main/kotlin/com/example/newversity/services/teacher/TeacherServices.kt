@@ -3,6 +3,7 @@ package com.example.newversity.services.teacher
 import com.example.newversity.aws.s3.service.AwsS3Service
 import com.example.newversity.model.TeacherConverter
 import com.example.newversity.model.TeacherDetailModel
+import com.example.newversity.model.TeacherProfilePercentageModel
 import com.example.newversity.repository.TeacherRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -15,7 +16,9 @@ import java.lang.Exception
 class TeacherServices(
         @Autowired val teacherRepository: TeacherRepository,
         @Autowired val tagsService: TagsService,
-        @Autowired val awsS3Service: AwsS3Service
+        @Autowired val awsS3Service: AwsS3Service,
+        @Autowired val teacherEducationService: TeacherEducationService,
+        @Autowired val teacherExperienceService: TeacherExperienceService
 ) {
 
     fun addTeacher(teacherDetailModel: TeacherDetailModel, teacherId: String): ResponseEntity<*> {
@@ -95,7 +98,8 @@ class TeacherServices(
     fun saveProfilePicture(file: MultipartFile, id: String): ResponseEntity<*> {
         return try {
             val fileUrl = awsS3Service.saveFile(file)
-            updateTeacher(TeacherDetailModel(profilePictureUrl = fileUrl), id)
+            val teacherDetailModel = TeacherDetailModel(teacherId = id, profilePictureUrl = fileUrl)
+            addTeacher(teacherDetailModel, id)
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Unable to upload file"))
         }
@@ -107,5 +111,76 @@ class TeacherServices(
             isTeacherValid =  !(it.teacherId.isNullOrEmpty() || it.mobileNumber.isNullOrEmpty() || it.email.isNullOrEmpty() || it.name.isNullOrEmpty())
         }
         return isTeacherValid
+    }
+
+    fun getTeacherProfileCompletionPercentage(teacherId: String): ResponseEntity<*> {
+        val teacherProfilePercentageModel = TeacherProfilePercentageModel()
+        var completePercentage = 0
+        var suggestion: String = ""
+
+        val tagList = tagsService.getAllTagsWithTeacherId(teacherId)
+
+        if(tagList.isNotEmpty()) {
+            completePercentage+= 20
+        } else {
+            suggestion = "please add tags"
+        }
+
+        var isAnyTagVerified = false
+
+        tagList.forEach {
+            if(it.teacherTagDetailList!![teacherId]?.tagStatus == TagStatus.Verified) {
+                isAnyTagVerified  = true
+            }
+        }
+
+        if(isAnyTagVerified) {
+            completePercentage += 20
+        } else {
+            suggestion = "please upload document proof"
+        }
+
+        if(checkForExperience(teacherId)) {
+            completePercentage+= 20
+        } else {
+            suggestion = "Add Experience"
+        }
+
+        if(checkForEducation(teacherId)) {
+            completePercentage+= 20
+        } else {
+            suggestion = "Add Education Details"
+        }
+
+        if(checkForPersonalInformation(teacherId)) {
+            completePercentage+= 20
+        } else {
+            suggestion = "Complete personal Info"
+        }
+
+        teacherProfilePercentageModel.apply {
+            this.completePercentage = completePercentage
+            this.suggestion = suggestion
+        }
+        return ResponseEntity.ok().body(teacherProfilePercentageModel)
+    }
+
+    fun checkForPersonalInformation(teacherId: String) : Boolean {
+        val teacherDetailsEntity = teacherRepository.findByTeacherId(teacherId)
+        return if(teacherDetailsEntity.isPresent) {
+            val teacher = teacherDetailsEntity.get()
+            !(teacher.name.isNullOrEmpty() || teacher.profilePictureUrl.isNullOrEmpty() || teacher.title.isNullOrEmpty()
+                    || teacher.info.isNullOrEmpty() || teacher.location.isNullOrEmpty() || teacher.language.isNullOrEmpty())
+        } else {
+            false
+        }
+    }
+
+    fun checkForEducation(teacherId: String): Boolean {
+        return teacherEducationService.getAllTeacherEducationDetailsList(teacherId).isNotEmpty()
+    }
+
+    fun checkForExperience(teacherId: String): Boolean {
+        return teacherExperienceService.getAllExperienceListByTeacherId(teacherId).isNotEmpty()
     }
 }
