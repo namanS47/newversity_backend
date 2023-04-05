@@ -2,6 +2,7 @@ package com.example.newversity.model
 
 import com.example.newversity.entity.Tags
 import com.example.newversity.entity.TeacherTagDetails
+import com.example.newversity.services.teacher.TagStatus
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 
@@ -13,8 +14,19 @@ class TagListModel(
 class TagModel (
         var tagName: String? = null,
         var tagCategory: String? = null,
-        var teacherTagDetailList: MutableMap<String, TeacherTagDetails>? = null,
-        var teacherTagDetails: TeacherTagDetails? = null,
+        var teacherTagDetailList: MutableMap<String, TeacherTagDetailsModel>? = null,
+        var teacherTagDetails: TeacherTagDetailsModel? = null,
+)
+
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+class TeacherTagDetailsModel(
+        var tagStatus: TagStatus? = null,
+
+        var documents: ArrayList<String>? = null,
+
+        var reason: String? = null,
+
+        var suggestion: String? = null,
 )
 
 
@@ -35,8 +47,31 @@ object TagConvertor {
         model.apply {
             tagName = tags.tagName
             tagCategory = tags.tagCategory
-            teacherTagDetailList = tags.teacherTagDetailList
+            teacherTagDetailList = teacherTagDetailListModel(tags.teacherTagDetailList)
         }
+        return model
+    }
+
+    fun toTeacherTagDetailModel(teacherTagDetail: TeacherTagDetails): TeacherTagDetailsModel {
+        val model = TeacherTagDetailsModel()
+        model.apply {
+            tagStatus = teacherTagDetail.tagStatus
+            documents = teacherTagDetail.documents
+            reason = teacherTagDetail.reason
+            suggestion = teacherTagDetail.suggestion
+        }
+        return model
+    }
+
+    private fun teacherTagDetailListModel(entity: MutableMap<String, TeacherTagDetails>?): MutableMap<String, TeacherTagDetailsModel>? {
+        if(entity == null){
+            return null
+        }
+        val model = mutableMapOf<String, TeacherTagDetailsModel>()
+        entity.forEach{
+            model[it.key] = toTeacherTagDetailModel(it.value)
+        }
+
         return model
     }
 

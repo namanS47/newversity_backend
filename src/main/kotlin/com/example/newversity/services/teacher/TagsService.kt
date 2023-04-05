@@ -9,7 +9,6 @@ import com.example.newversity.model.TagModel
 import com.example.newversity.repository.TagsRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
@@ -55,7 +54,9 @@ class TagsService(
     }
 
     fun getAllTagsModelWithTeacherId(teacherId: String): ResponseEntity<*> {
-        val tagsList = tagsRepository.findAll()
+        val tagsList = tagsRepository.findAll().map {
+            TagConvertor.toAllTagModel(it)
+        }
         val teacherTagModelList = tagsList
                 .filter {
                     it.teacherTagDetailList?.contains(teacherId) ?: false
@@ -110,6 +111,7 @@ class TagsService(
                 } else {
                     tag.teacherTagDetailList!![teacherId]?.documents?.add(fileUrl)
                 }
+                tag.teacherTagDetailList!![teacherId]?.tagStatus = TagStatus.InProcess
                 tagsRepository.save(tag)
                 ResponseEntity.ok(EmptyJsonResponse())
             } else {
@@ -122,5 +124,5 @@ class TagsService(
 }
 
 enum class TagStatus {
-    Verified, Unverified, Failed
+    Verified, Unverified, Failed, InProcess
 }
