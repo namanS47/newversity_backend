@@ -1,6 +1,5 @@
 package com.example.newversity.controller
 
-import com.example.newversity.aws.s3.service.AwsS3Service
 import com.example.newversity.model.*
 import com.example.newversity.services.room.RoomService
 import com.example.newversity.services.teacher.*
@@ -14,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("/")
 class AppController(
         @Autowired val teacherServices: TeacherServices,
+        @Autowired val bankAccountService: BankAccountService,
         @Autowired val roomService: RoomService,
         @Autowired val teacherExperienceService: TeacherExperienceService,
         @Autowired val teacherEducationService: TeacherEducationService,
@@ -24,7 +24,7 @@ class AppController(
     fun getHello(): String = "Hello Naman"
 
     @GetMapping("/spring")
-    fun createRoom(): String{
+    fun createRoom(): String {
         return roomService.generateRoom()
     }
 
@@ -39,7 +39,7 @@ class AppController(
     }
 
     @GetMapping("/teacher")
-    fun getTeacher(@RequestHeader("teacherId") teacherId: String) : ResponseEntity<*> {
+    fun getTeacher(@RequestHeader("teacherId") teacherId: String): ResponseEntity<*> {
         return teacherServices.getTeacher(teacherId)
     }
 
@@ -54,7 +54,7 @@ class AppController(
     }
 
     @GetMapping("/teacher/experience")
-    fun getAllTeacherExperience(@RequestHeader teacherId: String) : ResponseEntity<*> {
+    fun getAllTeacherExperience(@RequestHeader teacherId: String): ResponseEntity<*> {
         return teacherExperienceService.getAllTeacherExperience(teacherId)
     }
 
@@ -64,12 +64,12 @@ class AppController(
     }
 
     @GetMapping("teacher/education")
-    fun getAllTeacherEducationDetails(@RequestHeader teacherId: String) : ResponseEntity<*> {
+    fun getAllTeacherEducationDetails(@RequestHeader teacherId: String): ResponseEntity<*> {
         return teacherEducationService.getAllTeacherEducationDetails(teacherId)
     }
 
     @PostMapping("/teacher/availability")
-    fun addAvailability(@RequestBody availabilityListModel: AvailabilityListModel) : ResponseEntity<*> {
+    fun addAvailability(@RequestBody availabilityListModel: AvailabilityListModel): ResponseEntity<*> {
         return availabilityService.addAvailability(availabilityListModel.availabilityList)
     }
 
@@ -79,17 +79,29 @@ class AppController(
     }
 
     @DeleteMapping("/teacher/availability")
-    fun deleteAvailability(@RequestHeader id: String) : ResponseEntity<*> {
+    fun deleteAvailability(@RequestHeader id: String): ResponseEntity<*> {
         return availabilityService.removeAvailability(id)
     }
 
     @PostMapping("/teacher/profileImage")
-    fun uploadDocsToS3(@RequestPart("file") file: MultipartFile, teacherId: String) : ResponseEntity<*> {
+    fun uploadDocsToS3(@RequestPart("file") file: MultipartFile, teacherId: String): ResponseEntity<*> {
         return teacherServices.saveProfilePicture(file, teacherId)
     }
 
     @GetMapping("teacher/completion")
     fun getTeacherCompletionPercentage(@RequestHeader teacherId: String): ResponseEntity<*> {
         return teacherServices.getTeacherProfileCompletionPercentage(teacherId)
+    }
+
+    @PostMapping("/bankAccount")
+    fun addBankAccountDetails(
+            @RequestHeader teacherId: String,
+            @RequestBody bankAccountDetailModel: BankAccountDetailModel): ResponseEntity<*> {
+        return bankAccountService.addBankAccountDetails(bankAccountDetailModel, teacherId)
+    }
+
+    @GetMapping("/bankAccount")
+    fun getBankAccountDetails(@RequestHeader teacherId: String) : ResponseEntity<*> {
+        return bankAccountService.getBankAccountDetails(teacherId)
     }
 }
