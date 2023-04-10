@@ -53,6 +53,9 @@ class TeacherServices(
         val teacherDetailsEntity = teacherRepository.findByTeacherId(teacherId)
         if(teacherDetailsEntity.isPresent) {
             var teacher = teacherDetailsEntity.get()
+            teacherDetailModel.name?.let {
+                teacher.name = it
+            }
             teacherDetailModel.introVideoUrl?.let {
                 teacher.introVideoUrl = it
             }
