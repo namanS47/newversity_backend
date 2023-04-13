@@ -53,7 +53,7 @@ class TagsService(
         return filteredTagsList
     }
 
-    fun getAllTagsModelWithTeacherId(teacherId: String): ResponseEntity<*> {
+    fun getAllTagsModelWithTeacherId(teacherId: String):  List<TagModel> {
         val tagsList = tagsRepository.findAll().map {
             TagConvertor.toAllTagModel(it)
         }
@@ -68,7 +68,7 @@ class TagsService(
                             teacherTagDetails = it.teacherTagDetailList!![teacherId]
                     )
                 }
-        return ResponseEntity.ok(teacherTagModelList)
+        return teacherTagModelList
     }
 
     fun mapNewTags(tagList: List<TagModel>?, teacherId: String?) {

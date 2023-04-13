@@ -1,8 +1,6 @@
 package com.example.newversity.controller
 
-import com.example.newversity.aws.s3.service.AwsS3Service
 import com.example.newversity.model.TagListModel
-import com.example.newversity.services.RedisService
 import com.example.newversity.services.student.SearchService
 import com.example.newversity.services.teacher.TagsService
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,7 +22,7 @@ class TagsController(
 
     @GetMapping("/teacher/tags")
     fun getTagsWithTeacherId(@RequestHeader teacherId: String): ResponseEntity<*> {
-        return tagsService.getAllTagsModelWithTeacherId(teacherId)
+        return ResponseEntity.ok(tagsService.getAllTagsModelWithTeacherId(teacherId))
     }
 
     @PostMapping("/tags")

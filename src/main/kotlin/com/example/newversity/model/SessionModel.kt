@@ -1,6 +1,10 @@
 package com.example.newversity.model
 
 import com.example.newversity.entity.Session
+import com.example.newversity.entity.TeacherDetails
+import com.example.newversity.entity.students.Student
+import com.example.newversity.model.student.StudentConverter
+import com.example.newversity.model.student.StudentDetailModel
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import java.util.*
@@ -10,6 +14,9 @@ class SessionModel (
         var id: String? = null,
         var teacherId: String? = null,
         var studentId: String? = null,
+        var teacherDetail: TeacherDetailModel? = null,
+        var studentDetail: StudentDetailModel? = null,
+        var teacherTagList: List<TagModel>? = null,
         var startDate: Date? = null,
         var endDate: Date? = null,
         var amount: Double? = null,
@@ -42,12 +49,15 @@ object SessionConvertor {
         return entity
     }
 
-    fun toModel(session: Session): SessionModel {
+    fun toModel(session: Session, teacherDetails: TeacherDetails?, student: Student?, tagList: List<TagModel>?): SessionModel {
         val model = SessionModel()
         model.apply {
             id = session.id
             teacherId = session.teacherId
             studentId = session.studentId
+            teacherDetail = teacherDetails?.let { TeacherConverter.toModel(it) }
+            studentDetail = student?.let { StudentConverter.toModel(it) }
+            teacherTagList = tagList
             startDate = session.startDate
             endDate = session.endDate
             amount = session.amount
