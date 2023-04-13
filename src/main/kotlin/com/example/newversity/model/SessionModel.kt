@@ -25,7 +25,7 @@ class SessionModel (
         var paymentId: String? = null,
         var mentorNote: String? = null,
         var studentFeedback: String? = null,
-        var studentRating: Int? = null,
+        var studentRating: Double? = null,
         var cancelled: Boolean? = null,
 )
 object SessionConvertor {

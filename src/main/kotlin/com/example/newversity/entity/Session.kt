@@ -34,7 +34,7 @@ class Session(
         var studentFeedback: String? = null,
 
         @Field("student_rating")
-        var studentRating: Int? = null,
+        var studentRating: Double? = null,
 
         var cancelled: Boolean? = null,
 ) : AppEntity()
