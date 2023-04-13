@@ -56,6 +56,29 @@ class SessionService(
         }
     }
 
+    fun getSessionByStudentId(studentId: String, type: String): ResponseEntity<*> {
+        val sessionList = sessionRepository.findAllByStudentId(studentId)
+        val currentTime = Date()
+        currentTime.time = System.currentTimeMillis() - 30 * 60 * 1000
+        val upcomingSessionList = sessionList.filter {
+            it.startDate!! > currentTime
+        }
+        val previousSessionList = sessionList.filter {
+            it.startDate!! <= currentTime
+        }
+        return when (type) {
+            "upcoming" -> {
+                ResponseEntity.ok(upcomingSessionList.map { SessionConvertor.toModel(it) })
+            }
+            "previous" -> {
+                ResponseEntity.ok(previousSessionList.map { SessionConvertor.toModel(it) })
+            }
+            else -> {
+                ResponseEntity.ok(sessionList.map { SessionConvertor.toModel(it) })
+            }
+        }
+    }
+
     fun getSessionById(id: String): ResponseEntity<*> {
         val session = sessionRepository.findById(id)
         return if(session.isPresent) {

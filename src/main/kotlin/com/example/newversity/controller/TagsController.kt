@@ -2,6 +2,8 @@ package com.example.newversity.controller
 
 import com.example.newversity.aws.s3.service.AwsS3Service
 import com.example.newversity.model.TagListModel
+import com.example.newversity.services.RedisService
+import com.example.newversity.services.student.SearchService
 import com.example.newversity.services.teacher.TagsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -11,7 +13,8 @@ import org.springframework.web.multipart.MultipartFile
 @RestController
 @RequestMapping("/")
 class TagsController(
-        @Autowired val tagsService: TagsService
+        @Autowired val tagsService: TagsService,
+        @Autowired val searchService: SearchService
 ) {
     @PostMapping("/teacher/tags")
     fun addTags(@RequestHeader teacherId: String, @RequestBody tagListModel: TagListModel, @RequestParam category: String): ResponseEntity<*> {
@@ -41,5 +44,15 @@ class TagsController(
             @RequestPart("teacherId") teacherId: String,
             @RequestPart("tag") tag: String): ResponseEntity<*> {
         return tagsService.addTagProofForTeacher(file, tag, teacherId)
+    }
+
+    @GetMapping("tag/search")
+    fun getAllTagsBySearchKeyword(@RequestParam tag: String) : ResponseEntity<*> {
+        return searchService.searchTag(tag)
+    }
+
+    @GetMapping("/tag")
+    fun getTagByTagName(@RequestParam tagName: String): ResponseEntity<*> {
+        return tagsService.getTagByTagName(tagName)
     }
 }

@@ -121,6 +121,14 @@ class TagsService(
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(mapOf("status" to "Something went wrong"))
         }
     }
+
+    fun getTagByTagName(tagName: String) : ResponseEntity<*> {
+        val tag = tagsRepository.findByTagName(tagName)
+        if(tag.isPresent) {
+            return ResponseEntity.ok(TagConvertor.toAllTagModel(tag.get()))
+        }
+        return ResponseEntity.ok(EmptyJsonResponse())
+    }
 }
 
 enum class TagStatus {

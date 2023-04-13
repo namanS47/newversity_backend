@@ -25,4 +25,9 @@ class SessionController(
     fun getSessionById(@RequestHeader id: String) : ResponseEntity<*> {
         return sessionService.getSessionById(id)
     }
+
+    @GetMapping("/student")
+    fun getSessionByStudentId(@RequestHeader studentId: String, @RequestParam("type") type: String = ""): ResponseEntity<*> {
+        return sessionService.getSessionByStudentId(studentId, type)
+    }
 }
