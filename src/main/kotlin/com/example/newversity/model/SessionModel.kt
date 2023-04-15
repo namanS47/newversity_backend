@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 import java.util.*
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
-class SessionModel (
+data class SessionModel (
         var id: String? = null,
         var teacherId: String? = null,
         var studentId: String? = null,

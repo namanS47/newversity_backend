@@ -6,18 +6,18 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 import java.util.*
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
-class AvailabilityRequestModel(
+data class AvailabilityRequestModel(
         var teacherId: String? = null,
         var date: Date? = null,
 )
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
-class AvailabilityListModel(
+data class AvailabilityListModel(
         var availabilityList: List<AvailabilityModel>?
 )
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
-class AvailabilityModel(
+data class AvailabilityModel(
         var id: String? = null,
         var teacherId: String? = null,
         var startDate: Date? = null,

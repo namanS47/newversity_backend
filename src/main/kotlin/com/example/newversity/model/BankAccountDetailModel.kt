@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
-class BankAccountDetailModel(
+data class BankAccountDetailModel(
         var id: String? = null,
         var teacherId: String? = null,
         var accountNumber: String? = null,

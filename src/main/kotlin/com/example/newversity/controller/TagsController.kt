@@ -53,4 +53,9 @@ class TagsController(
     fun getTagByTagName(@RequestParam tagName: String): ResponseEntity<*> {
         return tagsService.getTagByTagName(tagName)
     }
+
+    @GetMapping("/tag/allTeacher")
+    fun getAllTeacherDetailsByTagName(@RequestBody tagListModel: TagListModel) : ResponseEntity<*> {
+        return tagsService.getAllTeacherDetailsByTagNamesList(tagListModel.tagModelList)
+    }
 }

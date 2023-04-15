@@ -55,7 +55,7 @@ class SessionService(
                     val studentDetail = it.studentId?.let { it1 -> studentRepository.findByStudentId(it1) }
                     val teacherDetail = it.teacherId?.let { it1 -> teacherRepository.findByTeacherId(it1) }
                     val tagList = tagService.getAllTagsModelWithTeacherId(teacherId)
-                    SessionConvertor.toModel(it, teacherDetail?.get(), studentDetail?.get(), tagList)
+                    SessionConvertor.toModel(it, teacherDetail?.orElse(null), studentDetail?.orElse(null), tagList)
                 })
             }
             "previous" -> {
@@ -63,7 +63,7 @@ class SessionService(
                     val studentDetail = it.studentId?.let { it1 -> studentRepository.findByStudentId(it1) }
                     val teacherDetail = it.teacherId?.let { it1 -> teacherRepository.findByTeacherId(it1) }
                     val tagList = tagService.getAllTagsModelWithTeacherId(teacherId)
-                    SessionConvertor.toModel(it, teacherDetail?.get(), studentDetail?.get(), tagList)
+                    SessionConvertor.toModel(it, teacherDetail?.orElse(null), studentDetail?.orElse(null), tagList)
                 })
             }
             else -> {
@@ -71,7 +71,7 @@ class SessionService(
                     val studentDetail = it.studentId?.let { it1 -> studentRepository.findByStudentId(it1) }
                     val teacherDetail = it.teacherId?.let { it1 -> teacherRepository.findByTeacherId(it1) }
                     val tagList = tagService.getAllTagsModelWithTeacherId(teacherId)
-                    SessionConvertor.toModel(it, teacherDetail?.get(), studentDetail?.get(), tagList)
+                    SessionConvertor.toModel(it, teacherDetail?.orElse(null), studentDetail?.orElse(null), tagList)
                 })
             }
         }
@@ -93,7 +93,7 @@ class SessionService(
                     val studentDetail = it.studentId?.let { it1 -> studentRepository.findByStudentId(it1) }
                     val teacherDetail = it.teacherId?.let { it1 -> teacherRepository.findByTeacherId(it1) }
                     val tagList = it.teacherId?.let { it1 -> tagService.getAllTagsModelWithTeacherId(it1) }
-                    SessionConvertor.toModel(it, teacherDetail?.get(), studentDetail?.get(), tagList)
+                    SessionConvertor.toModel(it, teacherDetail?.orElse(null), studentDetail?.orElse(null), tagList)
 
                 })
             }
@@ -102,7 +102,7 @@ class SessionService(
                     val studentDetail = it.studentId?.let { it1 -> studentRepository.findByStudentId(it1) }
                     val teacherDetail = it.teacherId?.let { it1 -> teacherRepository.findByTeacherId(it1) }
                     val tagList = it.teacherId?.let { it1 -> tagService.getAllTagsModelWithTeacherId(it1) }
-                    SessionConvertor.toModel(it, teacherDetail?.get(), studentDetail?.get(), tagList)
+                    SessionConvertor.toModel(it, teacherDetail?.orElse(null), studentDetail?.orElse(null), tagList)
 
                 })
             }
@@ -111,7 +111,7 @@ class SessionService(
                     val studentDetail = it.studentId?.let { it1 -> studentRepository.findByStudentId(it1) }
                     val teacherDetail = it.teacherId?.let { it1 -> teacherRepository.findByTeacherId(it1) }
                     val tagList = it.teacherId?.let { it1 -> tagService.getAllTagsModelWithTeacherId(it1) }
-                    SessionConvertor.toModel(it, teacherDetail?.get(), studentDetail?.get(), tagList)
+                    SessionConvertor.toModel(it, teacherDetail?.orElse(null), studentDetail?.orElse(null), tagList)
                 })
             }
         }
@@ -123,7 +123,7 @@ class SessionService(
             val studentDetail = session.get().studentId?.let { studentRepository.findByStudentId(it) }
             val teacherDetail = session.get().teacherId?.let { teacherRepository.findByTeacherId(it) }
             val tagList = session.get().teacherId?.let { tagService.getAllTagsModelWithTeacherId(it) }
-            ResponseEntity.ok().body(SessionConvertor.toModel(session.get(), teacherDetail?.get(), studentDetail?.get(), tagList))
+            ResponseEntity.ok().body(SessionConvertor.toModel(session.get(), teacherDetail?.orElse(null), studentDetail?.orElse(null), tagList))
         } else {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Session Id doesn't exist"))
         }
