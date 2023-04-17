@@ -26,6 +26,7 @@ data class SessionModel (
         var mentorNote: String? = null,
         var studentFeedback: String? = null,
         var studentRating: Double? = null,
+        var issueRaised: String? = null,
         var cancelled: Boolean? = null,
 )
 object SessionConvertor {
@@ -44,6 +45,7 @@ object SessionConvertor {
             mentorNote = sessionModel.mentorNote
             studentFeedback = sessionModel.studentFeedback
             studentRating = sessionModel.studentRating
+            issueRaised = sessionModel.issueRaised
             cancelled = sessionModel.cancelled
         }
         return entity
@@ -67,6 +69,7 @@ object SessionConvertor {
             mentorNote = session.mentorNote
             studentFeedback = session.studentFeedback
             studentRating = session.studentRating
+            issueRaised = session.issueRaised
             cancelled = session.cancelled
         }
         return model

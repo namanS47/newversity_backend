@@ -89,7 +89,7 @@ class StudentService(
     fun getStudentProfileCompletionPercentage(studentId: String): ResponseEntity<*> {
         val studentProfilePercentageModel = TeacherProfilePercentageModel()
         var completePercentage = 0
-        var suggestion: String = ""
+        var suggestion = ""
 
         val studentDetails = studentRepository.findByStudentId(studentId)
 
@@ -134,7 +134,11 @@ class StudentService(
             }
 
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "student id doesn't exist"))
+            studentProfilePercentageModel.apply {
+                this.completePercentage = 0
+                this.suggestion = "Student doesn't exist"
+            }
+            return ResponseEntity.ok().body(studentProfilePercentageModel)
         }
 
         studentProfilePercentageModel.apply {

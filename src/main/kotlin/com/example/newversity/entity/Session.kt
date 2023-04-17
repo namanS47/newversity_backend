@@ -36,5 +36,8 @@ class Session(
         @Field("student_rating")
         var studentRating: Double? = null,
 
+        @Field("issue_raised")
+        var issueRaised: String? = null,
+
         var cancelled: Boolean? = null,
 ) : AppEntity()

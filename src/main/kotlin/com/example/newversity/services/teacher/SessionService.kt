@@ -149,6 +149,14 @@ class SessionService(
         sessionModel.studentRating?.let {
             session.studentRating = it
         }
+
+        sessionModel.issueRaised?.let {
+            session.issueRaised = it
+        }
+
+        sessionModel.cancelled?.let {
+            session.cancelled = it
+        }
         val sessionDetail = sessionRepository.save(session)
         return ResponseEntity.ok().body(SessionConvertor.toModel(sessionDetail, null, null, null))
     }
