@@ -22,15 +22,26 @@ class AvailabilityService(
     }
 
     fun getAllAvailabilityByTeacherIdAndDate(availabilityRequestModel: AvailabilityRequestModel): ResponseEntity<*> {
-        if (availabilityRequestModel.teacherId.isNullOrEmpty() || availabilityRequestModel.date == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Incomplete details"))
+        if (availabilityRequestModel.teacherId.isNullOrEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "teacherId missing"))
         }
         val allAvailability = availabilityRepository.findAllByTeacherId(availabilityRequestModel.teacherId!!)
-        val availabilityList = allAvailability.filter {
-            isDateSame(it.startDate!!, availabilityRequestModel.date!!)
+
+        val availabilityList = if(availabilityRequestModel.date != null) {
+            allAvailability.filter {
+                isDateSame(it.startDate!!, availabilityRequestModel.date!!)
+            }
+        } else {
+            allAvailability.filter {
+                isDateInFuture(it.startDate!!)
+            }
         }
+
+
         return ResponseEntity.ok(availabilityList.map { AvailabilityConverter.toModel(it) })
     }
+
+
 
     fun addAvailability(availabilityList: List<AvailabilityModel>?): ResponseEntity<*> {
         availabilityList?.forEach { availabilityModel ->
@@ -65,5 +76,10 @@ class AvailabilityService(
 
     fun isDateSame(d1: Date, d2: Date): Boolean {
         return d1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() == d2.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+    }
+
+    fun isDateInFuture(date: Date): Boolean {
+        val currentDate = Date()
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() > currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
     }
 }
