@@ -4,6 +4,7 @@ import com.example.newversity.repository.TagsRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class SearchService(
@@ -14,7 +15,7 @@ class SearchService(
             it.tagName
         }
         val resultedTags = allTagsList.filter {
-            it?.contains(tagName) ?: false
+            it?.lowercase(Locale.getDefault())?.contains(tagName.lowercase(Locale.getDefault())) ?: false
         }
         return ResponseEntity.ok(resultedTags)
     }
