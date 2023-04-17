@@ -6,6 +6,7 @@ import com.example.newversity.entity.TeacherDetails
 import com.example.newversity.entity.TeacherTagDetails
 import com.example.newversity.model.*
 import com.example.newversity.repository.TagsRepository
+import com.example.newversity.repository.TeacherEducationRepository
 import com.example.newversity.repository.TeacherRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -19,6 +20,7 @@ import java.lang.Exception
 class TagsService(
         @Autowired val tagsRepository: TagsRepository,
         @Autowired val teacherRepository: TeacherRepository,
+        @Autowired val educationRepository: TeacherEducationRepository,
         @Autowired val awsS3Service: AwsS3Service
 ) {
     @Async
@@ -163,8 +165,12 @@ class TagsService(
 
         teacherAndTagDetailsList.forEach {
             val teacherDetails = teacherRepository.findByTeacherId(it.key)
+            val educationDetails = educationRepository.findAllByTeacherId(it.key)
             if(teacherDetails.isPresent) {
                 val teacher = teacherDetails.get()
+                if(educationDetails.isNotEmpty()) {
+                    teacher.education = educationDetails[0].name
+                }
                 teacher.tags = it.value
                 result.add(teacher)
             }
