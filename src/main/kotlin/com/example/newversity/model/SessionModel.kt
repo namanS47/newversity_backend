@@ -3,6 +3,7 @@ package com.example.newversity.model
 import com.example.newversity.entity.Session
 import com.example.newversity.entity.TeacherDetails
 import com.example.newversity.entity.students.Student
+import com.example.newversity.model.room.GenerateRoomResponseModel
 import com.example.newversity.model.student.StudentConverter
 import com.example.newversity.model.student.StudentDetailModel
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
@@ -28,6 +29,8 @@ data class SessionModel (
         var studentRating: Double? = null,
         var issueRaised: String? = null,
         var cancelled: Boolean? = null,
+        var teacherToken: String? = null,
+        var studentToken: String? = null,
 )
 object SessionConvertor {
     fun toEntity(sessionModel: SessionModel): Session {
@@ -47,6 +50,8 @@ object SessionConvertor {
             studentRating = sessionModel.studentRating
             issueRaised = sessionModel.issueRaised
             cancelled = sessionModel.cancelled
+            teacherToken = sessionModel.teacherToken
+            studentToken = sessionModel.studentToken
         }
         return entity
     }
@@ -71,6 +76,8 @@ object SessionConvertor {
             studentRating = session.studentRating
             issueRaised = session.issueRaised
             cancelled = session.cancelled
+            teacherToken = session.teacherToken
+            studentToken = session.studentToken
         }
         return model
     }

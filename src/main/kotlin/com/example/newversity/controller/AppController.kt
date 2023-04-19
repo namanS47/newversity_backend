@@ -1,6 +1,8 @@
 package com.example.newversity.controller
 
 import com.example.newversity.model.*
+import com.example.newversity.model.payment.OrderRequestModel
+import com.example.newversity.services.Razorpay.RazorpayService
 import com.example.newversity.services.room.RoomService
 import com.example.newversity.services.teacher.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,24 +16,14 @@ import org.springframework.web.multipart.MultipartFile
 class AppController(
         @Autowired val teacherServices: TeacherServices,
         @Autowired val bankAccountService: BankAccountService,
-        @Autowired val roomService: RoomService,
         @Autowired val teacherExperienceService: TeacherExperienceService,
         @Autowired val teacherEducationService: TeacherEducationService,
-        @Autowired val availabilityService: AvailabilityService
+        @Autowired val availabilityService: AvailabilityService,
+        @Autowired val razorpayService: RazorpayService
 ) {
 
     @GetMapping("/")
     fun getHello(): String = "Hello Naman"
-
-    @GetMapping("/spring")
-    fun createRoom(): String {
-        return roomService.generateRoom()
-    }
-
-    @GetMapping("/getRoomToken")
-    fun fetchRoomToken(): ResponseEntity<*> {
-        return ResponseEntity.ok(roomService.generateHmsClientToken())
-    }
 
     @PostMapping("/addTeacher")
     fun addTeacher(@RequestBody teacherDetailModel: TeacherDetailModel, @RequestHeader("teacherId") teacherId: String): ResponseEntity<*> {
@@ -103,5 +95,10 @@ class AppController(
     @GetMapping("/bankAccount")
     fun getBankAccountDetails(@RequestHeader teacherId: String) : ResponseEntity<*> {
         return bankAccountService.getBankAccountDetails(teacherId)
+    }
+
+    @GetMapping("/order")
+    fun createPaymentOrder(@RequestBody orderDetails: OrderRequestModel): ResponseEntity<*> {
+        return razorpayService.createOrder(orderDetails)
     }
 }

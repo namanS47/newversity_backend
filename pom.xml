@@ -95,6 +95,18 @@
 			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.razorpay</groupId>
+			<artifactId>razorpay-java</artifactId>
+			<version>1.4.3</version>
+		</dependency>
+
 
 	</dependencies>
 
@@ -124,6 +136,28 @@
 						<version>${kotlin.version}</version>
 					</dependency>
 				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<systemPropertyVariables>
+						<spring.config.name>application-staging</spring.config.name>
+					</systemPropertyVariables>
+				</configuration>
+				<executions>
+					<execution>
+						<id>production</id>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<systemPropertyVariables>
+								<spring.config.name>application-production</spring.config.name>
+							</systemPropertyVariables>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

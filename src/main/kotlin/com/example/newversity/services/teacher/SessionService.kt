@@ -6,6 +6,7 @@ import com.example.newversity.model.SessionModel
 import com.example.newversity.repository.SessionRepository
 import com.example.newversity.repository.TeacherRepository
 import com.example.newversity.repository.students.StudentRepository
+import com.example.newversity.services.room.RoomService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -17,7 +18,8 @@ class SessionService(
         @Autowired val sessionRepository: SessionRepository,
         @Autowired val studentRepository: StudentRepository,
         @Autowired val teacherRepository: TeacherRepository,
-        @Autowired val tagService: TagsService
+        @Autowired val tagService: TagsService,
+        @Autowired val roomService: RoomService
 ) {
 
     fun addSession(sessionModel: SessionModel): ResponseEntity<*> {
@@ -30,7 +32,9 @@ class SessionService(
             }
         } ?: run {
             if (isSessionModelValid(sessionModel)) {
-                val sessionDetail = sessionRepository.save(SessionConvertor.toEntity(sessionModel))
+                var sessionDetail = sessionRepository.save(SessionConvertor.toEntity(sessionModel))
+                sessionDetail = roomService.sessionAuthTokenForRoom(sessionDetail)
+                sessionDetail = sessionRepository.save(sessionDetail)
                 return ResponseEntity.ok().body(SessionConvertor.toModel(sessionDetail, null, null, null))
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Incomplete details"))

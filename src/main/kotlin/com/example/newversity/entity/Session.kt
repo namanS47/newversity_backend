@@ -1,4 +1,5 @@
 package com.example.newversity.entity
+import com.example.newversity.model.room.GenerateRoomResponseModel
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 import java.util.*
@@ -40,4 +41,12 @@ class Session(
         var issueRaised: String? = null,
 
         var cancelled: Boolean? = null,
+
+        @Field("teacher_token")
+        var teacherToken: String? = null,
+
+        @Field("student_token")
+        var studentToken: String? = null,
+
+        var roomResponseModel: GenerateRoomResponseModel? = null,
 ) : AppEntity()
