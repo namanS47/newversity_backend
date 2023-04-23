@@ -3,6 +3,7 @@ package com.example.newversity.controller
 import com.example.newversity.model.TagListModel
 import com.example.newversity.services.student.SearchService
 import com.example.newversity.services.teacher.TagsService
+import com.example.newversity.services.teacher.TeacherServices
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -12,7 +13,8 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("/")
 class TagsController(
         @Autowired val tagsService: TagsService,
-        @Autowired val searchService: SearchService
+        @Autowired val searchService: SearchService,
+        @Autowired val teacherServices: TeacherServices
 ) {
     @PostMapping("/teacher/tags")
     fun addTags(@RequestHeader teacherId: String, @RequestBody tagListModel: TagListModel, @RequestParam category: String): ResponseEntity<*> {
@@ -51,11 +53,11 @@ class TagsController(
 
     @GetMapping("/tag")
     fun getTagByTagName(@RequestParam tagName: String): ResponseEntity<*> {
-        return tagsService.getTagByTagName(tagName)
+        return tagsService.getTagByTagNameResponse(tagName)
     }
 
     @GetMapping("/tag/allTeacher")
     fun getAllTeacherDetailsByTagName(@RequestBody tagListModel: TagListModel) : ResponseEntity<*> {
-        return tagsService.getAllTeacherDetailsByTagNamesList(tagListModel.tagModelList)
+        return teacherServices.getAllTeacherDetailsByTagNamesList(tagListModel.tagModelList)
     }
 }

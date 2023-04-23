@@ -2,12 +2,9 @@ package com.example.newversity.services.teacher
 
 import com.example.newversity.aws.s3.service.AwsS3Service
 import com.example.newversity.entity.Tags
-import com.example.newversity.entity.TeacherDetails
 import com.example.newversity.entity.TeacherTagDetails
 import com.example.newversity.model.*
 import com.example.newversity.repository.TagsRepository
-import com.example.newversity.repository.TeacherEducationRepository
-import com.example.newversity.repository.TeacherRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -19,9 +16,7 @@ import java.lang.Exception
 @Service
 class TagsService(
         @Autowired val tagsRepository: TagsRepository,
-        @Autowired val teacherRepository: TeacherRepository,
-        @Autowired val educationRepository: TeacherEducationRepository,
-        @Autowired val awsS3Service: AwsS3Service
+        @Autowired val awsS3Service: AwsS3Service,
 ) {
     @Async
     fun updateTagList(tagList: List<TagModel>?, teacherId: String, tagType: String) {
@@ -125,58 +120,20 @@ class TagsService(
         }
     }
 
-    fun getTagByTagName(tagName: String) : ResponseEntity<*> {
+    fun getTagByTagNameResponse(tagName: String) : ResponseEntity<*> {
         val tag = tagsRepository.findByTagName(tagName)
         if(tag.isPresent) {
             return ResponseEntity.ok(TagConvertor.toAllTagModel(tag.get()))
         }
         return ResponseEntity.ok(EmptyJsonResponse())
     }
-    fun getAllTeacherDetailsByTagNamesList(tagModelList: List<TagModel>?) : ResponseEntity<*> {
 
-        val tagList = mutableListOf<Tags>()
-
-        tagModelList?.forEach {
-            val tag = it.tagName?.let { it1 -> tagsRepository.findByTagName(it1) }
-            if(tag?.isPresent == true) {
-                tagList.add(tag.get())
-            }
+    fun getTagByTagName(tagName: String) : Tags? {
+        val tag = tagsRepository.findByTagName(tagName)
+        if(tag.isPresent) {
+            return tag.get()
         }
-
-        val teacherAndTagDetailsList = mutableMapOf<String, ArrayList<String>>()
-        tagList.forEach {tag ->
-            tag.teacherTagDetailList?.forEach {
-                val teacherId = it.key
-                val tagDetail = it.value
-
-                if(tagDetail.tagStatus == TagStatus.Verified || tagDetail.tagStatus == TagStatus.Unverified) {
-                    if(teacherAndTagDetailsList.contains(teacherId)) {
-                        teacherAndTagDetailsList[teacherId]!!.add(tag.tagName!!)
-                    } else {
-                        val arrayListOfTags = arrayListOf<String>()
-                        arrayListOfTags.add(tag.tagName!!)
-                        teacherAndTagDetailsList[teacherId] = arrayListOfTags
-                    }
-                }
-            }
-        }
-
-        val result = arrayListOf<TeacherDetails>()
-
-        teacherAndTagDetailsList.forEach {
-            val teacherDetails = teacherRepository.findByTeacherId(it.key)
-            val educationDetails = educationRepository.findAllByTeacherId(it.key)
-            if(teacherDetails.isPresent) {
-                val teacher = teacherDetails.get()
-                if(educationDetails.isNotEmpty()) {
-                    teacher.education = educationDetails[0].name
-                }
-                teacher.tags = it.value
-                result.add(teacher)
-            }
-        }
-
-        return ResponseEntity.ok().body(result.map { TeacherConverter.toModel(it) })
+        return null
     }
 }
 

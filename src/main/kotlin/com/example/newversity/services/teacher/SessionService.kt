@@ -1,9 +1,11 @@
 package com.example.newversity.services.teacher
 
 import com.example.newversity.entity.Session
+import com.example.newversity.entity.TeacherDetails
 import com.example.newversity.model.SessionConvertor
 import com.example.newversity.model.SessionModel
 import com.example.newversity.repository.SessionRepository
+import com.example.newversity.repository.TeacherEducationRepository
 import com.example.newversity.repository.TeacherRepository
 import com.example.newversity.repository.students.StudentRepository
 import com.example.newversity.services.room.RoomService
@@ -17,9 +19,9 @@ import java.util.*
 class SessionService(
         @Autowired val sessionRepository: SessionRepository,
         @Autowired val studentRepository: StudentRepository,
-        @Autowired val teacherRepository: TeacherRepository,
-        @Autowired val tagService: TagsService,
-        @Autowired val roomService: RoomService
+        @Autowired val roomService: RoomService,
+        @Autowired val teacherServices: TeacherServices,
+        @Autowired val availabilityService: AvailabilityService
 ) {
 
     fun addSession(sessionModel: SessionModel): ResponseEntity<*> {
@@ -34,8 +36,9 @@ class SessionService(
             if (isSessionModelValid(sessionModel)) {
                 var sessionDetail = sessionRepository.save(SessionConvertor.toEntity(sessionModel))
                 sessionDetail = roomService.sessionAuthTokenForRoom(sessionDetail)
+                sessionModel.availabilityId?.let { availabilityService.bookAvailability(it) }
                 sessionDetail = sessionRepository.save(sessionDetail)
-                return ResponseEntity.ok().body(SessionConvertor.toModel(sessionDetail, null, null, null))
+                return ResponseEntity.ok().body(SessionConvertor.toModel(sessionDetail, null, null))
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Incomplete details"))
             }
@@ -57,25 +60,22 @@ class SessionService(
             "upcoming" -> {
                 ResponseEntity.ok(upcomingSessionList.map {
                     val studentDetail = it.studentId?.let { it1 -> studentRepository.findByStudentId(it1) }
-                    val teacherDetail = it.teacherId?.let { it1 -> teacherRepository.findByTeacherId(it1) }
-                    val tagList = tagService.getAllTagsModelWithTeacherId(teacherId)
-                    SessionConvertor.toModel(it, teacherDetail?.orElse(null), studentDetail?.orElse(null), tagList)
+                    val teacherDetail = it.teacherId?.let { it1 -> teacherServices.getCompleteTeacherDetails(it1) }
+                    SessionConvertor.toModel(it, teacherDetail, studentDetail?.orElse(null))
                 })
             }
             "previous" -> {
                 ResponseEntity.ok(previousSessionList.map {
                     val studentDetail = it.studentId?.let { it1 -> studentRepository.findByStudentId(it1) }
-                    val teacherDetail = it.teacherId?.let { it1 -> teacherRepository.findByTeacherId(it1) }
-                    val tagList = tagService.getAllTagsModelWithTeacherId(teacherId)
-                    SessionConvertor.toModel(it, teacherDetail?.orElse(null), studentDetail?.orElse(null), tagList)
+                    val teacherDetail = it.teacherId?.let { it1 -> teacherServices.getCompleteTeacherDetails(it1) }
+                    SessionConvertor.toModel(it, teacherDetail, studentDetail?.orElse(null))
                 })
             }
             else -> {
                 ResponseEntity.ok(sessionList.map {
                     val studentDetail = it.studentId?.let { it1 -> studentRepository.findByStudentId(it1) }
-                    val teacherDetail = it.teacherId?.let { it1 -> teacherRepository.findByTeacherId(it1) }
-                    val tagList = tagService.getAllTagsModelWithTeacherId(teacherId)
-                    SessionConvertor.toModel(it, teacherDetail?.orElse(null), studentDetail?.orElse(null), tagList)
+                    val teacherDetail = it.teacherId?.let { it1 -> teacherServices.getCompleteTeacherDetails(it1) }
+                    SessionConvertor.toModel(it, teacherDetail, studentDetail?.orElse(null))
                 })
             }
         }
@@ -95,27 +95,22 @@ class SessionService(
             "upcoming" -> {
                 ResponseEntity.ok(upcomingSessionList.map {
                     val studentDetail = it.studentId?.let { it1 -> studentRepository.findByStudentId(it1) }
-                    val teacherDetail = it.teacherId?.let { it1 -> teacherRepository.findByTeacherId(it1) }
-                    val tagList = it.teacherId?.let { it1 -> tagService.getAllTagsModelWithTeacherId(it1) }
-                    SessionConvertor.toModel(it, teacherDetail?.orElse(null), studentDetail?.orElse(null), tagList)
-
+                    val teacherDetail = it.teacherId?.let { it1 -> teacherServices.getCompleteTeacherDetails(it1) }
+                    SessionConvertor.toModel(it, teacherDetail, studentDetail?.orElse(null))
                 })
             }
             "previous" -> {
                 ResponseEntity.ok(previousSessionList.map {
                     val studentDetail = it.studentId?.let { it1 -> studentRepository.findByStudentId(it1) }
-                    val teacherDetail = it.teacherId?.let { it1 -> teacherRepository.findByTeacherId(it1) }
-                    val tagList = it.teacherId?.let { it1 -> tagService.getAllTagsModelWithTeacherId(it1) }
-                    SessionConvertor.toModel(it, teacherDetail?.orElse(null), studentDetail?.orElse(null), tagList)
-
+                    val teacherDetail = it.teacherId?.let { it1 -> teacherServices.getCompleteTeacherDetails(it1) }
+                    SessionConvertor.toModel(it, teacherDetail, studentDetail?.orElse(null))
                 })
             }
             else -> {
                 ResponseEntity.ok(sessionList.map {
                     val studentDetail = it.studentId?.let { it1 -> studentRepository.findByStudentId(it1) }
-                    val teacherDetail = it.teacherId?.let { it1 -> teacherRepository.findByTeacherId(it1) }
-                    val tagList = it.teacherId?.let { it1 -> tagService.getAllTagsModelWithTeacherId(it1) }
-                    SessionConvertor.toModel(it, teacherDetail?.orElse(null), studentDetail?.orElse(null), tagList)
+                    val teacherDetail = it.teacherId?.let { it1 -> teacherServices.getCompleteTeacherDetails(it1) }
+                    SessionConvertor.toModel(it, teacherDetail, studentDetail?.orElse(null))
                 })
             }
         }
@@ -125,9 +120,8 @@ class SessionService(
         val session = sessionRepository.findById(id)
         return if(session.isPresent) {
             val studentDetail = session.get().studentId?.let { studentRepository.findByStudentId(it) }
-            val teacherDetail = session.get().teacherId?.let { teacherRepository.findByTeacherId(it) }
-            val tagList = session.get().teacherId?.let { tagService.getAllTagsModelWithTeacherId(it) }
-            ResponseEntity.ok().body(SessionConvertor.toModel(session.get(), teacherDetail?.orElse(null), studentDetail?.orElse(null), tagList))
+            val teacherDetail = session.get().teacherId?.let { teacherServices.getCompleteTeacherDetails(it) }
+            ResponseEntity.ok().body(SessionConvertor.toModel(session.get(), teacherDetail, studentDetail?.orElse(null)))
         } else {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Session Id doesn't exist"))
         }
@@ -162,7 +156,7 @@ class SessionService(
             session.cancelled = it
         }
         val sessionDetail = sessionRepository.save(session)
-        return ResponseEntity.ok().body(SessionConvertor.toModel(sessionDetail, null, null, null))
+        return ResponseEntity.ok().body(SessionConvertor.toModel(sessionDetail, null, null))
     }
 
     fun isSessionModelValid(sessionModel: SessionModel): Boolean {

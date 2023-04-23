@@ -24,6 +24,7 @@ data class SessionModel (
         var sessionType: String? = null,
         var agenda: String? = null,
         var paymentId: String? = null,
+        var orderId: String? = null,
         var mentorNote: String? = null,
         var studentFeedback: String? = null,
         var studentRating: Double? = null,
@@ -31,6 +32,7 @@ data class SessionModel (
         var cancelled: Boolean? = null,
         var teacherToken: String? = null,
         var studentToken: String? = null,
+        var availabilityId: String? = null,
 )
 object SessionConvertor {
     fun toEntity(sessionModel: SessionModel): Session {
@@ -45,6 +47,7 @@ object SessionConvertor {
             sessionType = sessionModel.sessionType
             agenda = sessionModel.agenda
             paymentId = sessionModel.paymentId
+            orderId = sessionModel.orderId
             mentorNote = sessionModel.mentorNote
             studentFeedback = sessionModel.studentFeedback
             studentRating = sessionModel.studentRating
@@ -56,7 +59,7 @@ object SessionConvertor {
         return entity
     }
 
-    fun toModel(session: Session, teacherDetails: TeacherDetails?, student: Student?, tagList: List<TagModel>?): SessionModel {
+    fun toModel(session: Session, teacherDetails: TeacherDetails?, student: Student?): SessionModel {
         val model = SessionModel()
         model.apply {
             id = session.id
@@ -64,13 +67,13 @@ object SessionConvertor {
             studentId = session.studentId
             teacherDetail = teacherDetails?.let { TeacherConverter.toModel(it) }
             studentDetail = student?.let { StudentConverter.toModel(it) }
-            teacherTagList = tagList
             startDate = session.startDate
             endDate = session.endDate
             amount = session.amount
             sessionType = session.sessionType
             agenda = session.agenda
             paymentId = session.paymentId
+            orderId = session.orderId
             mentorNote = session.mentorNote
             studentFeedback = session.studentFeedback
             studentRating = session.studentRating

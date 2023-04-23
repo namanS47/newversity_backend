@@ -1,9 +1,13 @@
 package com.example.newversity.services.teacher
 
 import com.example.newversity.aws.s3.service.AwsS3Service
+import com.example.newversity.entity.Tags
+import com.example.newversity.entity.TeacherDetails
+import com.example.newversity.model.TagModel
 import com.example.newversity.model.TeacherConverter
 import com.example.newversity.model.TeacherDetailModel
 import com.example.newversity.model.TeacherProfilePercentageModel
+import com.example.newversity.repository.TeacherEducationRepository
 import com.example.newversity.repository.TeacherRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -18,7 +22,8 @@ class TeacherServices(
         @Autowired val tagsService: TagsService,
         @Autowired val awsS3Service: AwsS3Service,
         @Autowired val teacherEducationService: TeacherEducationService,
-        @Autowired val teacherExperienceService: TeacherExperienceService
+        @Autowired val teacherExperienceService: TeacherExperienceService,
+        @Autowired val teacherEducationRepository: TeacherEducationRepository
 ) {
 
     fun addTeacher(teacherDetailModel: TeacherDetailModel, teacherId: String): ResponseEntity<*> {
@@ -40,13 +45,8 @@ class TeacherServices(
     }
 
     fun getTeacher(teacherId: String) : ResponseEntity<*> {
-        val teacherDetails = teacherRepository.findByTeacherId(teacherId)
-        return if(teacherDetails.isPresent) {
-            ResponseEntity.ok(TeacherConverter.toModel(teacherDetails.get()))
-        } else {
-//            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("status" to "Teacher Doesn't Exist"))
-            ResponseEntity.ok(null)
-        }
+        val teacherDetails = getCompleteTeacherDetails(teacherId)
+        return ResponseEntity.ok(teacherDetails?.let { TeacherConverter.toModel(it) })
     }
 
     fun updateTeacher(teacherDetailModel: TeacherDetailModel, teacherId: String): ResponseEntity<*> {
@@ -185,5 +185,94 @@ class TeacherServices(
 
     fun checkForExperience(teacherId: String): Boolean {
         return teacherExperienceService.getAllExperienceListByTeacherId(teacherId).isNotEmpty()
+    }
+
+    fun getCompleteTeacherDetails(teacherId: String) : TeacherDetails? {
+        val teacherDetail = teacherRepository.findByTeacherId(teacherId)
+        val educationDetails = teacherEducationRepository.findAllByTeacherId(teacherId)
+        val tagList = tagsService.getAllTagsModelWithTeacherId(teacherId)
+
+        if(teacherDetail.isPresent) {
+            val teacher = teacherDetail.get()
+            if(educationDetails.isNotEmpty()) {
+                teacher.education = educationDetails[0].name
+            }
+            if(tagList.isNotEmpty()) {
+                teacher.tags = tagList.filter {
+                    !it.tagName.isNullOrEmpty()
+                }.map {
+                    it.tagName!!
+                }
+            }
+            return  teacher
+        }
+        return null
+    }
+
+    fun getAllTeacherDetailsByTagNamesList(tagModelList: List<TagModel>?) : ResponseEntity<*> {
+
+        val tagList = mutableListOf<Tags>()
+
+        tagModelList?.forEach {
+            val tag = it.tagName?.let { it1 -> tagsService.getTagByTagName(it1) }
+            if(tag != null) {
+                tagList.add(tag)
+            }
+        }
+
+        val teacherList = mutableSetOf<String>()
+        tagList.forEach { tag->
+            tag.teacherTagDetailList?.forEach {
+                val teacherId = it.key
+                val tagDetail = it.value
+                //TODO: Naman: remove unverified tags
+                if(tagDetail.tagStatus == TagStatus.Verified || tagDetail.tagStatus == TagStatus.Unverified) {
+                    teacherList.add(teacherId)
+                }
+            }
+        }
+
+        val result = arrayListOf<TeacherDetails>()
+        teacherList.forEach {
+            val teacher = getCompleteTeacherDetails(it)
+            if (teacher != null) {
+                result.add(teacher)
+            }
+        }
+
+//        val teacherAndTagDetailsList = mutableMapOf<String, ArrayList<String>>()
+//        tagList.forEach {tag ->
+//            tag.teacherTagDetailList?.forEach {
+//                val teacherId = it.key
+//                val tagDetail = it.value
+//
+//                if(tagDetail.tagStatus == TagStatus.Verified || tagDetail.tagStatus == TagStatus.Unverified) {
+//                    if(teacherAndTagDetailsList.contains(teacherId)) {
+//                        teacherAndTagDetailsList[teacherId]!!.add(tag.tagName!!)
+//                    } else {
+//                        val arrayListOfTags = arrayListOf<String>()
+//                        arrayListOfTags.add(tag.tagName!!)
+//                        teacherAndTagDetailsList[teacherId] = arrayListOfTags
+//                    }
+//                }
+//            }
+//        }
+//
+//        val result = arrayListOf<TeacherDetails>()
+//
+//        teacherAndTagDetailsList.forEach {
+//            val teacherDetails = teacherRepository.findByTeacherId(it.key)
+//            val educationDetails = educationRepository.findAllByTeacherId(it.key)
+//            if(teacherDetails.isPresent) {
+//                val teacher = teacherDetails.get()
+//                if(educationDetails.isNotEmpty()) {
+//                    teacher.education = educationDetails[0].name
+//                }
+//                teacher.tags = it.value
+//                result.add(teacher)
+//            }
+//        }
+//
+        return ResponseEntity.ok().body(result.map { TeacherConverter.toModel(it) })
     }
 }

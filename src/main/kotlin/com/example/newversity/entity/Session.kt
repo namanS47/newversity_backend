@@ -28,6 +28,9 @@ class Session(
         @Field("payment_id")
         var paymentId: String? = null,
 
+        @Field("order_id")
+        var orderId: String? = null,
+
         @Field("mentor_note")
         var mentorNote: String? = null,
 
