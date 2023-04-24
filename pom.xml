@@ -137,28 +137,28 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<systemPropertyVariables>
-						<spring.config.name>application-staging</spring.config.name>
-					</systemPropertyVariables>
-				</configuration>
-				<executions>
-					<execution>
-						<id>production</id>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<systemPropertyVariables>
-								<spring.config.name>application-production</spring.config.name>
-							</systemPropertyVariables>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+<!--			<plugin>-->
+<!--				<groupId>org.springframework.boot</groupId>-->
+<!--				<artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--				<configuration>-->
+<!--					<systemPropertyVariables>-->
+<!--						<spring.config.name>application-staging</spring.config.name>-->
+<!--					</systemPropertyVariables>-->
+<!--				</configuration>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>production</id>-->
+<!--						<goals>-->
+<!--							<goal>run</goal>-->
+<!--						</goals>-->
+<!--						<configuration>-->
+<!--							<systemPropertyVariables>-->
+<!--								<spring.config.name>application-production</spring.config.name>-->
+<!--							</systemPropertyVariables>-->
+<!--						</configuration>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
 		</plugins>
 	</build>
 
