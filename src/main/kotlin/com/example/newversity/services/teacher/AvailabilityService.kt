@@ -1,5 +1,6 @@
 package com.example.newversity.services.teacher
 
+import com.example.newversity.entity.Availability
 import com.example.newversity.model.AvailabilityConverter
 import com.example.newversity.model.AvailabilityModel
 import com.example.newversity.model.AvailabilityRequestModel
@@ -29,14 +30,13 @@ class AvailabilityService(
 
         val availabilityList = if(availabilityRequestModel.date != null) {
             allAvailability.filter {
-                isDateSame(it.startDate!!, availabilityRequestModel.date!!)
+                isDateSame(it.startDate!!, availabilityRequestModel.date!!) && it.booked != true
             }
         } else {
             allAvailability.filter {
-                isDateInFuture(it.startDate!!)
+                isDateInFuture(it.startDate!!) && it.booked != true
             }
         }
-
 
         return ResponseEntity.ok(availabilityList.map { AvailabilityConverter.toModel(it) })
     }
@@ -65,6 +65,15 @@ class AvailabilityService(
         return ResponseEntity.ok(EmptyJsonResponse())
     }
 
+    fun bookAvailability(availabilityId: String) {
+        val availability = availabilityRepository.findById(availabilityId)
+        if(availability.isPresent) {
+            val availabilityDetail = availability.get()
+            availabilityDetail.booked = true
+            availabilityRepository.save(availabilityDetail)
+        }
+    }
+
     fun removeAvailability(id: String): ResponseEntity<*> {
         availabilityRepository.deleteById(id)
         return ResponseEntity.ok(EmptyJsonResponse())
@@ -80,6 +89,6 @@ class AvailabilityService(
 
     fun isDateInFuture(date: Date): Boolean {
         val currentDate = Date()
-        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() > currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        return date > currentDate
     }
 }
