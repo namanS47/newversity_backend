@@ -101,4 +101,9 @@ class AppController(
     fun createPaymentOrder(@RequestBody orderDetails: OrderRequestModel): ResponseEntity<*> {
         return razorpayService.createOrder(orderDetails)
     }
+
+    @GetMapping("/search/teacher")
+    fun getAllTeacherBySearchKeyword(@RequestParam searchKeyword: String) : ResponseEntity<*> {
+        return ResponseEntity.ok(teacherServices.getAllTeacherDetailsBySearchKeyword(searchKeyword))
+    }
 }

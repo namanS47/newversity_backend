@@ -58,6 +58,6 @@ class TagsController(
 
     @GetMapping("/tag/allTeacher")
     fun getAllTeacherDetailsByTagName(@RequestBody tagListModel: TagListModel) : ResponseEntity<*> {
-        return teacherServices.getAllTeacherDetailsByTagNamesList(tagListModel.tagModelList)
+        return ResponseEntity.ok(teacherServices.getAllTeacherDetailsByTagNamesList(tagListModel.tagModelList))
     }
 }

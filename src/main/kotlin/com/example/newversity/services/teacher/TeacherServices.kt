@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.lang.Exception
+import java.util.*
 
 @Service
 class TeacherServices(
@@ -28,30 +29,31 @@ class TeacherServices(
 
     fun addTeacher(teacherDetailModel: TeacherDetailModel, teacherId: String): ResponseEntity<*> {
         val teacherDetailsEntity = teacherRepository.findByTeacherId(teacherId)
-        return if(teacherDetailsEntity.isPresent) {
+        return if (teacherDetailsEntity.isPresent) {
             updateTeacher(teacherDetailModel, teacherId)
         } else {
             save(teacherDetailModel)
         }
     }
+
     fun save(teacherDetailModel: TeacherDetailModel): ResponseEntity<*> {
-            return if(!teacherRepository.findByTeacherId(teacherDetailModel.teacherId ?: "").isPresent){
-                teacherDetailModel.isNew = true
-                val teacherDetails = teacherRepository.save(TeacherConverter.toEntity(teacherDetailModel))
-                ResponseEntity.ok(TeacherConverter.toModel(teacherDetails))
-            } else {
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Teacher Already Exist"))
-            }
+        return if (!teacherRepository.findByTeacherId(teacherDetailModel.teacherId ?: "").isPresent) {
+            teacherDetailModel.isNew = true
+            val teacherDetails = teacherRepository.save(TeacherConverter.toEntity(teacherDetailModel))
+            ResponseEntity.ok(TeacherConverter.toModel(teacherDetails))
+        } else {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Teacher Already Exist"))
+        }
     }
 
-    fun getTeacher(teacherId: String) : ResponseEntity<*> {
+    fun getTeacher(teacherId: String): ResponseEntity<*> {
         val teacherDetails = getCompleteTeacherDetails(teacherId)
         return ResponseEntity.ok(teacherDetails?.let { TeacherConverter.toModel(it) })
     }
 
     fun updateTeacher(teacherDetailModel: TeacherDetailModel, teacherId: String): ResponseEntity<*> {
         val teacherDetailsEntity = teacherRepository.findByTeacherId(teacherId)
-        if(teacherDetailsEntity.isPresent) {
+        if (teacherDetailsEntity.isPresent) {
             var teacher = teacherDetailsEntity.get()
             teacherDetailModel.name?.let {
                 teacher.name = it
@@ -111,7 +113,7 @@ class TeacherServices(
     fun isTeacherValid(teacherDetailModel: TeacherDetailModel): Boolean {
         var isTeacherValid = true
         teacherDetailModel.let {
-            isTeacherValid =  !(it.teacherId.isNullOrEmpty() || it.mobileNumber.isNullOrEmpty() || it.email.isNullOrEmpty() || it.name.isNullOrEmpty())
+            isTeacherValid = !(it.teacherId.isNullOrEmpty() || it.mobileNumber.isNullOrEmpty() || it.email.isNullOrEmpty() || it.name.isNullOrEmpty())
         }
         return isTeacherValid
     }
@@ -123,8 +125,8 @@ class TeacherServices(
 
         val tagList = tagsService.getAllTagsWithTeacherId(teacherId)
 
-        if(tagList.isNotEmpty()) {
-            completePercentage+= 20
+        if (tagList.isNotEmpty()) {
+            completePercentage += 20
         } else {
             suggestion = "please add tags"
         }
@@ -132,31 +134,31 @@ class TeacherServices(
         var isAnyTagVerified = false
 
         tagList.forEach {
-            if(it.teacherTagDetailList!![teacherId]?.tagStatus == TagStatus.Verified) {
-                isAnyTagVerified  = true
+            if (it.teacherTagDetailList!![teacherId]?.tagStatus == TagStatus.Verified) {
+                isAnyTagVerified = true
             }
         }
 
-        if(isAnyTagVerified) {
+        if (isAnyTagVerified) {
             completePercentage += 20
         } else {
             suggestion = "please upload document proof"
         }
 
-        if(checkForExperience(teacherId)) {
-            completePercentage+= 20
+        if (checkForExperience(teacherId)) {
+            completePercentage += 20
         } else {
             suggestion = "Add Experience"
         }
 
-        if(checkForEducation(teacherId)) {
-            completePercentage+= 20
+        if (checkForEducation(teacherId)) {
+            completePercentage += 20
         } else {
             suggestion = "Add Education Details"
         }
 
-        if(checkForPersonalInformation(teacherId)) {
-            completePercentage+= 20
+        if (checkForPersonalInformation(teacherId)) {
+            completePercentage += 20
         } else {
             suggestion = "Complete personal Info"
         }
@@ -168,9 +170,9 @@ class TeacherServices(
         return ResponseEntity.ok().body(teacherProfilePercentageModel)
     }
 
-    fun checkForPersonalInformation(teacherId: String) : Boolean {
+    fun checkForPersonalInformation(teacherId: String): Boolean {
         val teacherDetailsEntity = teacherRepository.findByTeacherId(teacherId)
-        return if(teacherDetailsEntity.isPresent) {
+        return if (teacherDetailsEntity.isPresent) {
             val teacher = teacherDetailsEntity.get()
             !(teacher.name.isNullOrEmpty() || teacher.profilePictureUrl.isNullOrEmpty() || teacher.title.isNullOrEmpty()
                     || teacher.info.isNullOrEmpty() || teacher.location.isNullOrEmpty() || teacher.language.isNullOrEmpty())
@@ -187,46 +189,46 @@ class TeacherServices(
         return teacherExperienceService.getAllExperienceListByTeacherId(teacherId).isNotEmpty()
     }
 
-    fun getCompleteTeacherDetails(teacherId: String) : TeacherDetails? {
+    fun getCompleteTeacherDetails(teacherId: String): TeacherDetails? {
         val teacherDetail = teacherRepository.findByTeacherId(teacherId)
         val educationDetails = teacherEducationRepository.findAllByTeacherId(teacherId)
         val tagList = tagsService.getAllTagsModelWithTeacherId(teacherId)
 
-        if(teacherDetail.isPresent) {
+        if (teacherDetail.isPresent) {
             val teacher = teacherDetail.get()
-            if(educationDetails.isNotEmpty()) {
+            if (educationDetails.isNotEmpty()) {
                 teacher.education = educationDetails[0].name
             }
-            if(tagList.isNotEmpty()) {
+            if (tagList.isNotEmpty()) {
                 teacher.tags = tagList.filter {
                     !it.tagName.isNullOrEmpty()
                 }.map {
                     it.tagName!!
                 }
             }
-            return  teacher
+            return teacher
         }
         return null
     }
 
-    fun getAllTeacherDetailsByTagNamesList(tagModelList: List<TagModel>?) : ResponseEntity<*> {
+    fun getAllTeacherDetailsByTagNamesList(tagModelList: List<TagModel>?): List<TeacherDetailModel> {
 
         val tagList = mutableListOf<Tags>()
 
         tagModelList?.forEach {
             val tag = it.tagName?.let { it1 -> tagsService.getTagByTagName(it1) }
-            if(tag != null) {
+            if (tag != null) {
                 tagList.add(tag)
             }
         }
 
         val teacherList = mutableSetOf<String>()
-        tagList.forEach { tag->
+        tagList.forEach { tag ->
             tag.teacherTagDetailList?.forEach {
                 val teacherId = it.key
                 val tagDetail = it.value
                 //TODO: Naman: remove unverified tags
-                if(tagDetail.tagStatus == TagStatus.Verified || tagDetail.tagStatus == TagStatus.Unverified) {
+                if (tagDetail.tagStatus == TagStatus.Verified || tagDetail.tagStatus == TagStatus.Unverified) {
                     teacherList.add(teacherId)
                 }
             }
@@ -239,40 +241,29 @@ class TeacherServices(
                 result.add(teacher)
             }
         }
+        return result.map { TeacherConverter.toModel(it) }
+    }
 
-//        val teacherAndTagDetailsList = mutableMapOf<String, ArrayList<String>>()
-//        tagList.forEach {tag ->
-//            tag.teacherTagDetailList?.forEach {
-//                val teacherId = it.key
-//                val tagDetail = it.value
-//
-//                if(tagDetail.tagStatus == TagStatus.Verified || tagDetail.tagStatus == TagStatus.Unverified) {
-//                    if(teacherAndTagDetailsList.contains(teacherId)) {
-//                        teacherAndTagDetailsList[teacherId]!!.add(tag.tagName!!)
-//                    } else {
-//                        val arrayListOfTags = arrayListOf<String>()
-//                        arrayListOfTags.add(tag.tagName!!)
-//                        teacherAndTagDetailsList[teacherId] = arrayListOfTags
-//                    }
-//                }
-//            }
-//        }
-//
-//        val result = arrayListOf<TeacherDetails>()
-//
-//        teacherAndTagDetailsList.forEach {
-//            val teacherDetails = teacherRepository.findByTeacherId(it.key)
-//            val educationDetails = educationRepository.findAllByTeacherId(it.key)
-//            if(teacherDetails.isPresent) {
-//                val teacher = teacherDetails.get()
-//                if(educationDetails.isNotEmpty()) {
-//                    teacher.education = educationDetails[0].name
-//                }
-//                teacher.tags = it.value
-//                result.add(teacher)
-//            }
-//        }
-//
-        return ResponseEntity.ok().body(result.map { TeacherConverter.toModel(it) })
+    fun getAllTeacherDetailsBySearchKeyword(keyword: String): List<TeacherDetailModel> {
+        if(keyword.isEmpty()) {
+            return listOf()
+        }
+        val allTeacherList = teacherRepository.findAll()
+        val resultedTeacherIds = allTeacherList.filter {
+            it.name?.lowercase()?.contains(keyword.lowercase()) == true || it.info?.lowercase()?.contains(keyword.lowercase()) == true || it.title?.lowercase()?.contains(keyword.lowercase()) == true
+        }.map {
+            it.teacherId!!
+        }
+        val getAllTeacherDetailsByTagKeyword = getAllTeacherDetailsByTagNamesList(listOf(TagModel(tagName = keyword)))
+
+        val resultedTeacherDetails = arrayListOf<TeacherDetailModel>()
+        resultedTeacherIds.forEach {
+            val teacherDetails = getCompleteTeacherDetails(it)
+            if (teacherDetails != null) {
+                resultedTeacherDetails.add(TeacherConverter.toModel(teacherDetails))
+            }
+        }
+
+        return resultedTeacherDetails + getAllTeacherDetailsByTagKeyword
     }
 }
