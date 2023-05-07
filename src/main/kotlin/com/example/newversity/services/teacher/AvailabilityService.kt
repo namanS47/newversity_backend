@@ -42,7 +42,6 @@ class AvailabilityService(
     }
 
 
-
     fun addAvailability(availabilityList: List<AvailabilityModel>?): ResponseEntity<*> {
         availabilityList?.forEach { availabilityModel ->
             if (!isAvailabilityModelValid(availabilityModel)) {
@@ -50,11 +49,12 @@ class AvailabilityService(
             }
 
             availabilityModel.teacherId?.let { availabilityRepository.findAllByTeacherId(it) }?.forEach {
-                if ((availabilityModel.startDate!! >= it.startDate && availabilityModel.startDate!! <= it.endDate) ||
-                        (availabilityModel.endDate!! <= it.endDate && availabilityModel.endDate!! >= it.startDate)
-                        || (availabilityModel.startDate!! <= it.startDate && availabilityModel.endDate!! > it.endDate)) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Overlapping duration, you already have availability within this duration"))
-                }
+
+                    if(availabilityModel.id != it.id) {
+                        if (isAvailabilityOverlapping(availabilityModel, it)) {
+                            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Overlapping duration, you already have availability within this duration"))
+                        }
+                    }
             }
         }
 
@@ -83,8 +83,15 @@ class AvailabilityService(
         return availabilityModel.startDate != null && availabilityModel.endDate != null && !availabilityModel.teacherId.isNullOrEmpty()
     }
 
+    fun isAvailabilityOverlapping(availabilityModelOne: AvailabilityModel, availability: Availability) :Boolean {
+        return (availabilityModelOne.startDate!! >= availability.startDate && availabilityModelOne.startDate!! <= availability.endDate) ||
+                (availabilityModelOne.endDate!! <= availability.endDate && availabilityModelOne.endDate!! >= availability.startDate)
+                || (availabilityModelOne.startDate!! <= availability.startDate && availabilityModelOne.endDate!! > availability.endDate)
+    }
+
     fun isDateSame(d1: Date, d2: Date): Boolean {
         return d1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() == d2.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                && isDateInFuture(d1)
     }
 
     fun isDateInFuture(date: Date): Boolean {

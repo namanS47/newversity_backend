@@ -1,8 +1,11 @@
 package com.example.newversity.model
 
 import com.example.newversity.entity.Availability
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
@@ -20,7 +23,9 @@ data class AvailabilityListModel(
 data class AvailabilityModel(
         var id: String? = null,
         var teacherId: String? = null,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "IST")
         var startDate: Date? = null,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "IST")
         var endDate: Date? = null,
         var sessionType: String? = null,
         var booked: Boolean? = null,
