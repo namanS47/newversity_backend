@@ -31,11 +31,11 @@ class AvailabilityService(
         val availabilityList = if(availabilityRequestModel.date != null) {
             allAvailability.filter {
                 isDateSame(it.startDate!!, availabilityRequestModel.date!!) && it.booked != true
-            }
+            }.sortedBy { it.startDate }
         } else {
             allAvailability.filter {
                 isDateInFuture(it.startDate!!) && it.booked != true
-            }
+            }.sortedBy { it.startDate }
         }
 
         return ResponseEntity.ok(availabilityList.map { AvailabilityConverter.toModel(it) })
