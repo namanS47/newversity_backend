@@ -1,6 +1,7 @@
 package com.example.newversity.model
 
 import com.example.newversity.entity.TeacherDetails
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import java.util.*
@@ -27,7 +28,9 @@ data class TeacherDetailModel(
         var profilePictureUrl: String? = null,
         var sessionPricing: HashMap<String, Double>? = null,
         var language: List<String>? = null,
-        var isNew: Boolean? = null
+        var isNew: Boolean? = null,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "IST")
+        var nextAvailable: Date? = null
 )
 
 object TeacherConverter {

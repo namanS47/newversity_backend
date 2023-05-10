@@ -22,7 +22,7 @@ class AvailabilityService(
         return ResponseEntity.ok(allAvailability.map { AvailabilityConverter.toModel(it) })
     }
 
-    fun getAllAvailabilityByTeacherIdAndDate(availabilityRequestModel: AvailabilityRequestModel): ResponseEntity<*> {
+    fun getAllAvailabilityByTeacherIdAndDateResponse(availabilityRequestModel: AvailabilityRequestModel): ResponseEntity<*> {
         if (availabilityRequestModel.teacherId.isNullOrEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "teacherId missing"))
         }
@@ -39,6 +39,15 @@ class AvailabilityService(
         }
 
         return ResponseEntity.ok(availabilityList.map { AvailabilityConverter.toModel(it) })
+    }
+
+    fun getAllAvailabilityByTeacherIdAndDate(teacherId: String): List<Availability> {
+        val allAvailability = availabilityRepository.findAllByTeacherId(teacherId)
+
+        val futureAvailability =  allAvailability.filter {
+            isDateInFuture(it.startDate!!) && it.booked != true
+        }.sortedBy { it.startDate }
+        return futureAvailability
     }
 
 

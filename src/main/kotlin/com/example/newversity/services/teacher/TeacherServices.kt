@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.lang.Exception
-import java.util.*
 
 @Service
 class TeacherServices(
@@ -24,7 +23,8 @@ class TeacherServices(
         @Autowired val awsS3Service: AwsS3Service,
         @Autowired val teacherEducationService: TeacherEducationService,
         @Autowired val teacherExperienceService: TeacherExperienceService,
-        @Autowired val teacherEducationRepository: TeacherEducationRepository
+        @Autowired val teacherEducationRepository: TeacherEducationRepository,
+        @Autowired val availabilityService: AvailabilityService
 ) {
 
     fun addTeacher(teacherDetailModel: TeacherDetailModel, teacherId: String): ResponseEntity<*> {
@@ -211,8 +211,44 @@ class TeacherServices(
         return null
     }
 
-    fun getAllTeacherDetailsByTagNamesList(tagModelList: List<TagModel>?): List<TeacherDetailModel> {
+    fun getAllAvailableTeacher(tagModelList: List<TagModel>?): List<TeacherDetailModel> {
+        val availableTeacherListByTagName = getAllAvailableTeachersDetailByTagName(tagModelList)
+        if(availableTeacherListByTagName.isNotEmpty()) {
+            return availableTeacherListByTagName
+        }
 
+        val allTeacherList= teacherRepository.findAll().filter { it.teacherId != null }
+        val result = arrayListOf<TeacherDetailModel>()
+
+        allTeacherList.forEach {
+            val allAvailability = availabilityService.getAllAvailabilityByTeacherIdAndDate(it.teacherId!!)
+
+            if(allAvailability.isNotEmpty()) {
+                val educationDetails = teacherEducationRepository.findAllByTeacherId(it.teacherId!!)
+                val tagList = tagsService.getAllTagsModelWithTeacherId(it.teacherId!!)
+
+                if (educationDetails.isNotEmpty()) {
+                    it.education = educationDetails[0].name
+                }
+                if (tagList.isNotEmpty()) {
+                    it.tags = tagList.filter {it1->
+                        !it1.tagName.isNullOrEmpty()
+                    }.map {it1->
+                        it1.tagName!!
+                    }
+                }
+
+                val teacherModel = TeacherConverter.toModel(it)
+                teacherModel.nextAvailable = allAvailability[0].startDate
+                result.add(teacherModel)
+
+            }
+        }
+
+        return result
+    }
+
+    fun getAllAvailableTeachersDetailByTagName(tagModelList: List<TagModel>?): List<TeacherDetailModel> {
         val tagList = mutableListOf<Tags>()
 
         tagModelList?.forEach {
@@ -234,14 +270,20 @@ class TeacherServices(
             }
         }
 
-        val result = arrayListOf<TeacherDetails>()
+        val result = arrayListOf<TeacherDetailModel>()
+
         teacherList.forEach {
-            val teacher = getCompleteTeacherDetails(it)
-            if (teacher != null) {
-                result.add(teacher)
+            val allAvailability = availabilityService.getAllAvailabilityByTeacherIdAndDate(it)
+            if(allAvailability.isNotEmpty()) {
+                val teacher = getCompleteTeacherDetails(it)
+                if (teacher != null) {
+                    val teacherModel = TeacherConverter.toModel(teacher)
+                    teacherModel.nextAvailable = allAvailability[0].startDate
+                    result.add(teacherModel)
+                }
             }
         }
-        return result.map { TeacherConverter.toModel(it) }
+        return result
     }
 
     fun getAllTeacherDetailsBySearchKeyword(keyword: String): List<TeacherDetailModel> {
@@ -254,7 +296,7 @@ class TeacherServices(
         }.map {
             it.teacherId!!
         }
-        val getAllTeacherDetailsByTagKeyword = getAllTeacherDetailsByTagNamesList(listOf(TagModel(tagName = keyword)))
+        val getAllTeacherDetailsByTagKeyword = getAllAvailableTeachersDetailByTagName(listOf(TagModel(tagName = keyword)))
 
         val resultedTeacherDetails = arrayListOf<TeacherDetailModel>()
         resultedTeacherIds.forEach {

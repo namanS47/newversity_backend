@@ -3,7 +3,6 @@ package com.example.newversity.controller
 import com.example.newversity.model.*
 import com.example.newversity.model.payment.OrderRequestModel
 import com.example.newversity.services.Razorpay.RazorpayService
-import com.example.newversity.services.room.RoomService
 import com.example.newversity.services.teacher.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -67,7 +66,7 @@ class AppController(
 
     @GetMapping("/teacher/availability")
     fun getAvailability(@RequestBody availabilityRequestModel: AvailabilityRequestModel): ResponseEntity<*> {
-        return availabilityService.getAllAvailabilityByTeacherIdAndDate(availabilityRequestModel)
+        return availabilityService.getAllAvailabilityByTeacherIdAndDateResponse(availabilityRequestModel)
     }
 
     @DeleteMapping("/teacher/availability")

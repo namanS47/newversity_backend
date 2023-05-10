@@ -3,9 +3,9 @@ package com.example.newversity.model
 import com.example.newversity.entity.Session
 import com.example.newversity.entity.TeacherDetails
 import com.example.newversity.entity.students.Student
-import com.example.newversity.model.room.GenerateRoomResponseModel
 import com.example.newversity.model.student.StudentConverter
 import com.example.newversity.model.student.StudentDetailModel
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import java.util.*
@@ -18,7 +18,9 @@ data class SessionModel (
         var teacherDetail: TeacherDetailModel? = null,
         var studentDetail: StudentDetailModel? = null,
         var teacherTagList: List<TagModel>? = null,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "IST")
         var startDate: Date? = null,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "IST")
         var endDate: Date? = null,
         var amount: Double? = null,
         var sessionType: String? = null,

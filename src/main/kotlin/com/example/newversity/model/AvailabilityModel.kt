@@ -11,6 +11,7 @@ import java.util.*
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
 data class AvailabilityRequestModel(
         var teacherId: String? = null,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "IST")
         var date: Date? = null,
 )
 
