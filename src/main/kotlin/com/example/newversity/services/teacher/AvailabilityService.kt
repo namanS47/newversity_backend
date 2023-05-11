@@ -3,7 +3,6 @@ package com.example.newversity.services.teacher
 import com.example.newversity.entity.Availability
 import com.example.newversity.model.AvailabilityConverter
 import com.example.newversity.model.AvailabilityModel
-import com.example.newversity.model.AvailabilityRequestModel
 import com.example.newversity.model.EmptyJsonResponse
 import com.example.newversity.repository.AvailabilityRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,15 +21,12 @@ class AvailabilityService(
         return ResponseEntity.ok(allAvailability.map { AvailabilityConverter.toModel(it) })
     }
 
-    fun getAllAvailabilityByTeacherIdAndDateResponse(availabilityRequestModel: AvailabilityRequestModel): ResponseEntity<*> {
-        if (availabilityRequestModel.teacherId.isNullOrEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "teacherId missing"))
-        }
-        val allAvailability = availabilityRepository.findAllByTeacherId(availabilityRequestModel.teacherId!!)
+    fun getAllAvailabilityByTeacherIdAndDateResponse(teacherId: String, date: Date?): ResponseEntity<*> {
+        val allAvailability = availabilityRepository.findAllByTeacherId(teacherId)
 
-        val availabilityList = if(availabilityRequestModel.date != null) {
+        val availabilityList = if(date != null) {
             allAvailability.filter {
-                isDateSame(it.startDate!!, availabilityRequestModel.date!!) && it.booked != true
+                isDateSame(it.startDate!!, date) && it.booked != true
             }.sortedBy { it.startDate }
         } else {
             allAvailability.filter {

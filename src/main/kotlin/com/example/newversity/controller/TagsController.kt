@@ -56,7 +56,7 @@ class TagsController(
         return tagsService.getTagByTagNameResponse(tagName)
     }
 
-    @GetMapping("/tag/allTeacher")
+    @PostMapping("/tag/allTeacher")
     fun getAllTeacherDetailsByTagName(@RequestBody tagListModel: TagListModel) : ResponseEntity<*> {
         return ResponseEntity.ok(teacherServices.getAllAvailableTeacher(tagListModel.tagModelList))
     }

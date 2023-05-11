@@ -222,27 +222,26 @@ class TeacherServices(
 
         allTeacherList.forEach {
             val allAvailability = availabilityService.getAllAvailabilityByTeacherIdAndDate(it.teacherId!!)
+            val educationDetails = teacherEducationRepository.findAllByTeacherId(it.teacherId!!)
+            val tagList = tagsService.getAllTagsModelWithTeacherId(it.teacherId!!)
+
+            if (educationDetails.isNotEmpty()) {
+                it.education = educationDetails[0].name
+            }
+            if (tagList.isNotEmpty()) {
+                it.tags = tagList.filter {it1->
+                    !it1.tagName.isNullOrEmpty()
+                }.map {it1->
+                    it1.tagName!!
+                }
+            }
+
+            val teacherModel = TeacherConverter.toModel(it)
 
             if(allAvailability.isNotEmpty()) {
-                val educationDetails = teacherEducationRepository.findAllByTeacherId(it.teacherId!!)
-                val tagList = tagsService.getAllTagsModelWithTeacherId(it.teacherId!!)
-
-                if (educationDetails.isNotEmpty()) {
-                    it.education = educationDetails[0].name
-                }
-                if (tagList.isNotEmpty()) {
-                    it.tags = tagList.filter {it1->
-                        !it1.tagName.isNullOrEmpty()
-                    }.map {it1->
-                        it1.tagName!!
-                    }
-                }
-
-                val teacherModel = TeacherConverter.toModel(it)
                 teacherModel.nextAvailable = allAvailability[0].startDate
-                result.add(teacherModel)
-
             }
+            result.add(teacherModel)
         }
 
         return result
@@ -273,14 +272,14 @@ class TeacherServices(
         val result = arrayListOf<TeacherDetailModel>()
 
         teacherList.forEach {
+            val teacher = getCompleteTeacherDetails(it)
             val allAvailability = availabilityService.getAllAvailabilityByTeacherIdAndDate(it)
-            if(allAvailability.isNotEmpty()) {
-                val teacher = getCompleteTeacherDetails(it)
-                if (teacher != null) {
-                    val teacherModel = TeacherConverter.toModel(teacher)
+            if (teacher != null) {
+                val teacherModel = TeacherConverter.toModel(teacher)
+                if(allAvailability.isNotEmpty()) {
                     teacherModel.nextAvailable = allAvailability[0].startDate
-                    result.add(teacherModel)
                 }
+                result.add(teacherModel)
             }
         }
         return result
@@ -300,12 +299,16 @@ class TeacherServices(
 
         val resultedTeacherDetails = arrayListOf<TeacherDetailModel>()
         resultedTeacherIds.forEach {
+            val allAvailability = availabilityService.getAllAvailabilityByTeacherIdAndDate(it)
             val teacherDetails = getCompleteTeacherDetails(it)
             if (teacherDetails != null) {
-                resultedTeacherDetails.add(TeacherConverter.toModel(teacherDetails))
+                val teacherModel = TeacherConverter.toModel(teacherDetails)
+                if(allAvailability.isNotEmpty()) {
+                    teacherModel.nextAvailable = allAvailability[0].startDate
+                }
+                resultedTeacherDetails.add(teacherModel)
             }
         }
-
         return resultedTeacherDetails + getAllTeacherDetailsByTagKeyword
     }
 }

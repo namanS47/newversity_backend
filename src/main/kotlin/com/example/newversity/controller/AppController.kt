@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.util.Date
 
 
 @RestController
@@ -65,8 +66,8 @@ class AppController(
     }
 
     @GetMapping("/teacher/availability")
-    fun getAvailability(@RequestBody availabilityRequestModel: AvailabilityRequestModel): ResponseEntity<*> {
-        return availabilityService.getAllAvailabilityByTeacherIdAndDateResponse(availabilityRequestModel)
+    fun getAvailability(@RequestHeader teacherId: String, @RequestHeader date: Date?): ResponseEntity<*> {
+        return availabilityService.getAllAvailabilityByTeacherIdAndDateResponse(teacherId, date)
     }
 
     @DeleteMapping("/teacher/availability")
@@ -96,7 +97,7 @@ class AppController(
         return bankAccountService.getBankAccountDetails(teacherId)
     }
 
-    @GetMapping("/order")
+    @PostMapping("/order")
     fun createPaymentOrder(@RequestBody orderDetails: OrderRequestModel): ResponseEntity<*> {
         return razorpayService.createOrder(orderDetails)
     }
