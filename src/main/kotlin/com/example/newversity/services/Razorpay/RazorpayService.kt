@@ -9,12 +9,15 @@ import com.google.gson.Gson
 import com.razorpay.Order
 import com.razorpay.RazorpayException
 import org.json.JSONObject
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 @Service
-class RazorpayService {
+class RazorpayService(
+        @Autowired val razorpayConfiguration: RazorpayConfiguration
+) {
     fun createOrder(orderDetails: OrderRequestModel): ResponseEntity<*> {
         return try {
             val orderRequest = JSONObject()
@@ -28,7 +31,7 @@ class RazorpayService {
 
             orderRequest.put("notes", notes)
 
-            val order: Order = RazorpayConfiguration().razorpayClient().orders.create(orderRequest)
+            val order: Order = razorpayConfiguration.razorpayClient().orders.create(orderRequest)
             val orderModel = Gson().fromJson(order.toString(), PaymentOrderModel::class.java)
 
             ResponseEntity.ok().body(orderModel)

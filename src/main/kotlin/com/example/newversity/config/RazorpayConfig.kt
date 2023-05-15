@@ -15,8 +15,7 @@ class RazorpayConfiguration {
 
     @Bean
     fun razorpayClient(): RazorpayClient {
-//        return RazorpayClient(razorpayKeyId, razorpayKeySecret)
-        return RazorpayClient("rzp_test_C4quaG5XBcUQDb", "Hs3yjHJtr37Uc3K3Z8pauNf6")
+        return RazorpayClient(razorpayKeyId, razorpayKeySecret)
     }
 
 }
