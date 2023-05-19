@@ -18,20 +18,20 @@ import java.util.*
 @Service
 class RoomService {
 
-    private val roomAccessKey =  "6409d44bedc7c8f3674c0d3b"
+    private val roomAccessKey = "6409d44bedc7c8f3674c0d3b"
     private val roomAppSecret = "LqOM_XoSqd2ta6_3fTz8Mzh6AgNRXIJEdeTqMN7_kaxAr5SqLfAVkoE9eq7useehLZmrbyyTgKnVYIbW1oFoJniBm0EhCOXJ89fuQgeGbVVzENWOulZoi0jdwBmDKLZD6WFs3cAbVoDLvvrs-64y2h-TvWydhk2aSktREMcpOoY="
 
     fun sessionAuthTokenForRoom(session: Session): Session {
         session.roomResponseModel = session.id?.let { generateRoom(it) }
-        session.studentToken = session.studentId?.let { generateHmsClientToken(it) }
-        session.teacherToken = session.teacherId?.let { generateHmsClientToken(it) }
+        session.studentToken = session.studentId?.let { session.roomResponseModel?.id?.let { it1 -> generateHmsClientToken(it, it1) } }
+        session.teacherToken = session.teacherId?.let { session.roomResponseModel?.id?.let { it1 -> generateHmsClientToken(it, it1) } }
         return session
     }
 
-    fun generateHmsClientToken(userId: String): String {
+    fun generateHmsClientToken(userId: String, roomId: String): String {
         val payload: MutableMap<String, Any?> = HashMap()
         payload["access_key"] = roomAccessKey
-        payload["room_id"] = "640a5af9db104c4c44befdf8"
+        payload["room_id"] = roomId
         payload["user_id"] = userId
         payload["role"] = "guest"
         payload["type"] = "app"
