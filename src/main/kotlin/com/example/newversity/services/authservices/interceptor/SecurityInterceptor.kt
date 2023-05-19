@@ -1,5 +1,6 @@
 package com.example.newversity.services.authservices.interceptor
 
+import com.google.firebase.auth.FirebaseAuth
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.apache.logging.log4j.LogManager
@@ -20,17 +21,16 @@ class ApiSecurityInterceptor : HandlerInterceptor {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         var jwtAuthToken: String? = null
         try {
-            return true
 
-//            if(byPassAuth(request)) {
-//                return true
-//            }
-//
-//            // Get JWT token from header value
-//            jwtAuthToken = request.getHeader(AUTH_HEADER_PARAMETER_AUTHERIZATION).replace(AUTH_HEADER_PARAMETER_BEARER, "")
-//            val decodedToken = FirebaseAuth.getInstance().verifyIdToken(jwtAuthToken)
-//
-//            return true
+            if(byPassAuth(request)) {
+                return true
+            }
+
+            // Get JWT token from header value
+            jwtAuthToken = request.getHeader(AUTH_HEADER_PARAMETER_AUTHERIZATION).replace(AUTH_HEADER_PARAMETER_BEARER, "")
+            val decodedToken = FirebaseAuth.getInstance().verifyIdToken(jwtAuthToken)
+
+            return true
         } catch (ae: AuthenticationException) {
             log.error("Authentication failed :  : " + ae.message)
         } catch (e: Exception) {
@@ -48,11 +48,11 @@ class ApiSecurityInterceptor : HandlerInterceptor {
     }
 
     fun byPassAuth(request: HttpServletRequest) :Boolean{
-        return request.method == "GET" && request.requestURI == "/spring"
+        return request.method == "GET" && request.requestURI == "/"
     }
 
     companion object {
-        private const val AUTH_HEADER_PARAMETER_AUTHERIZATION = "authorization"
+        private const val AUTH_HEADER_PARAMETER_AUTHERIZATION = "Authorization"
         private const val AUTH_HEADER_PARAMETER_BEARER = "Bearer "
     }
 }

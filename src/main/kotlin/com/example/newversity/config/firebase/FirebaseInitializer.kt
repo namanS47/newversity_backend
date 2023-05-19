@@ -1,4 +1,4 @@
-package com.example.newversity
+package com.example.newversity.config.firebase
 
 
 import com.google.auth.oauth2.GoogleCredentials
@@ -13,28 +13,6 @@ import org.springframework.core.io.Resource
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.IOException
-
-
-@Slf4j
-@Configuration
-class FirebaseServiceCredential {
-    private val log = LogManager.getLogger(javaClass)
-
-    @Throws(IOException::class)
-    fun firebaseConnect() {
-        try {
-            val serviceAccount = FileInputStream("resources/firebase_config.json")
-            val options = FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-//                    .setDatabaseUrl("https://charity.firebaseio.com/")
-                    .build()
-            FirebaseApp.initializeApp(options)
-            FirebaseDatabase.getInstance(FirebaseApp.getInstance()).setPersistenceEnabled(true)
-        } catch (e: Exception) {
-            log.info("Trying to login to firebase failed. Reason: " + e.message)
-        }
-    }
-}
 
 @Configuration
 class FirebaseInitialization {
