@@ -2,7 +2,10 @@ package com.example.newversity.controller
 
 import com.example.newversity.model.*
 import com.example.newversity.model.payment.OrderRequestModel
+import com.example.newversity.services.CommonDetailService
 import com.example.newversity.services.Razorpay.RazorpayService
+import com.example.newversity.services.authservices.interceptor.ApiSecurityInterceptor
+import com.example.newversity.services.firebase.FirebaseMessagingService
 import com.example.newversity.services.teacher.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -19,7 +22,9 @@ class AppController(
         @Autowired val teacherExperienceService: TeacherExperienceService,
         @Autowired val teacherEducationService: TeacherEducationService,
         @Autowired val availabilityService: AvailabilityService,
-        @Autowired val razorpayService: RazorpayService
+        @Autowired val razorpayService: RazorpayService,
+        @Autowired val firebaseMessagingService: FirebaseMessagingService,
+        @Autowired val commonDetailService: CommonDetailService
 ) {
 
     @GetMapping("/")
@@ -105,5 +110,15 @@ class AppController(
     @GetMapping("/search/teacher")
     fun getAllTeacherBySearchKeyword(@RequestParam searchKeyword: String) : ResponseEntity<*> {
         return ResponseEntity.ok(teacherServices.getAllTeacherDetailsBySearchKeyword(searchKeyword))
+    }
+
+    @PostMapping("/pushNotification")
+    fun sendPushNotification() {
+        firebaseMessagingService.sendNotification("ckiJNLRhQm-gVTp8gBp5ik:APA91bGNIoZzci-8KJVYlSDSfDKcIG0RJR-LKJhhME3jzScTFc2D73LAx-vD_axlue30gVBqzlN1xnCi9iztvgBDXwhK2wyy3lLXLbAIv1XtKQ0UW1tUsW-P2UYHEIqJBZW7SjWEJhtD")
+    }
+
+    @PostMapping("/fcmToken")
+    fun saveFcmToken(@RequestBody commonDetailsModel: CommonDetailsModel) {
+        commonDetailService.saveCommonDetails(commonDetailsModel)
     }
 }

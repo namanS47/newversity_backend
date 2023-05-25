@@ -1,16 +1,11 @@
 package com.example.newversity.config.firebase
 
-
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
-import com.google.firebase.database.FirebaseDatabase
-import lombok.extern.slf4j.Slf4j
-import org.apache.logging.log4j.LogManager
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
 import org.springframework.core.io.Resource
-import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.IOException
 
