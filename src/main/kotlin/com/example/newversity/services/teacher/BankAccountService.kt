@@ -16,7 +16,12 @@ class BankAccountService(
     fun addBankAccountDetails(bankAccountDetailModel: BankAccountDetailModel, teacherId: String): ResponseEntity<*> {
         val bankAccountEntity = bankAccountRepository.findByTeacherId(teacherId)
         return if (bankAccountEntity.isPresent) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Account already added"))
+            val bankAccount = bankAccountEntity.get()
+            bankAccount.accountName = bankAccountDetailModel.accountName
+            bankAccount.accountNumber = bankAccountDetailModel.accountNumber
+            bankAccount.ifscCode = bankAccountDetailModel.ifscCode
+            bankAccountRepository.save(bankAccount)
+            ResponseEntity.ok(EmptyJsonResponse())
         } else {
             if(isBankAccountModelValid(bankAccountDetailModel)) {
                 bankAccountRepository.save(BankAccountDetailConvertor.onEntity(bankAccountDetailModel))
