@@ -1,10 +1,8 @@
 package com.example.newversity.services.phonepe
 
-import com.example.newversity.model.payment.phonepe.PhonePeCallbackResponseModel
-import com.example.newversity.model.payment.phonepe.PhonePePGUrlRequestModel
-import com.example.newversity.model.payment.phonepe.PhonePePGUrlResponseModel
-import com.example.newversity.model.payment.phonepe.PhonePePGUrlResponseModelConvertor
+import com.example.newversity.model.payment.phonepe.*
 import com.example.newversity.repository.phonepe.PhonePeOrderRepository
+import com.example.newversity.repository.phonepe.PhonePeTransactionRepository
 import com.google.gson.Gson
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -22,7 +20,8 @@ import java.util.*
 
 @Service
 class PhonePeService(
-        @Autowired val phonePeOrderRepository: PhonePeOrderRepository
+        @Autowired val phonePeOrderRepository: PhonePeOrderRepository,
+        @Autowired val phonePeTransactionRepository: PhonePeTransactionRepository
 ) {
     @Value("\${phone_pe_merchant_id}")
     private lateinit var merchantId: String
@@ -99,6 +98,13 @@ class PhonePeService(
     }
 
     fun handleCallbackResponseModel(callbackResponseModel: PhonePeCallbackResponseModel) {
-//        teacherServices.addTeacher(TeacherDetailModel(name = callbackResponseModel.response), teacherId = "teacher1")
+        val decoder = Base64.getDecoder()
+        val decoded =String(decoder.decode(callbackResponseModel.response))
+        val phonePeTransactionStatusResponseModel = Gson().fromJson(decoded, PhonePeTransactionStatusResponseModel::class.java)
+        val phonePeTransactionStatusModel = PhonePeTransactionStatusModel(
+                merchantTransactionId = phonePeTransactionStatusResponseModel.data?.merchantTransactionId,
+                phonePeTransactionStatusResponse = phonePeTransactionStatusResponseModel
+        )
+        phonePeTransactionRepository.save(PhonePeTransactionStatusModelConvertor.toEntity(phonePeTransactionStatusModel))
     }
 }
