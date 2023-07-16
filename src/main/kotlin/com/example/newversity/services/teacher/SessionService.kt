@@ -1,12 +1,9 @@
 package com.example.newversity.services.teacher
 
 import com.example.newversity.entity.Session
-import com.example.newversity.entity.TeacherDetails
 import com.example.newversity.model.SessionConvertor
 import com.example.newversity.model.SessionModel
 import com.example.newversity.repository.SessionRepository
-import com.example.newversity.repository.TeacherEducationRepository
-import com.example.newversity.repository.TeacherRepository
 import com.example.newversity.repository.students.StudentRepository
 import com.example.newversity.services.room.RoomService
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,7 +33,7 @@ class SessionService(
             if (isSessionModelValid(sessionModel)) {
                 var sessionDetail = sessionRepository.save(SessionConvertor.toEntity(sessionModel))
                 sessionDetail = roomService.sessionAuthTokenForRoom(sessionDetail)
-                sessionModel.availabilityId?.let { availabilityService.bookAvailability(it) }
+                sessionModel.let { availabilityService.bookAvailability(it.availabilityId!!, it.startDate!!, it.endDate!!) }
                 sessionDetail = sessionRepository.save(sessionDetail)
                 return ResponseEntity.ok().body(SessionConvertor.toModel(sessionDetail, null, null))
             } else {

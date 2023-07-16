@@ -70,12 +70,40 @@ class AvailabilityService(
         return ResponseEntity.ok(EmptyJsonResponse())
     }
 
-    fun bookAvailability(availabilityId: String) {
+    fun bookAvailability(availabilityId: String, startDate: Date, endDate: Date) {
         val availability = availabilityRepository.findById(availabilityId)
         if(availability.isPresent) {
             val availabilityDetail = availability.get()
             availabilityDetail.booked = true
             availabilityRepository.save(availabilityDetail)
+
+            //Add new availability with remaining time
+            val bookedAvailabilityModel = AvailabilityConverter.toModel(availabilityDetail)
+            val startDateDifference = startDate.time - bookedAvailabilityModel.startDate!!.time
+            val endDateDifference = bookedAvailabilityModel.endDate!!.time - endDate.time
+
+            if(startDateDifference/60000 >= 45) {
+                val newAvailability = AvailabilityModel(
+                        teacherId = bookedAvailabilityModel.teacherId,
+                        startDate = bookedAvailabilityModel.startDate,
+                        endDate = Date(startDate.time - 15*60000),
+                        sessionType = bookedAvailabilityModel.sessionType,
+                        booked = false
+                )
+                availabilityRepository.save(AvailabilityConverter.toEntity(newAvailability))
+            }
+
+            if(endDateDifference/60000 >= 45) {
+                val newAvailability = AvailabilityModel(
+                        teacherId = bookedAvailabilityModel.teacherId,
+                        startDate = Date(startDate.time + 15*60000),
+                        endDate = bookedAvailabilityModel.endDate,
+                        sessionType = bookedAvailabilityModel.sessionType,
+                        booked = false
+                )
+                availabilityRepository.save(AvailabilityConverter.toEntity(newAvailability))
+            }
+
         }
     }
 
