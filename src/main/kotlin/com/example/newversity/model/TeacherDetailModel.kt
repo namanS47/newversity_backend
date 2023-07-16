@@ -30,7 +30,8 @@ data class TeacherDetailModel(
         var language: List<String>? = null,
         var isNew: Boolean? = null,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "IST")
-        var nextAvailable: Date? = null
+        var nextAvailable: Date? = null,
+        var isApproved: Boolean? = null,
 )
 
 object TeacherConverter {
@@ -58,6 +59,7 @@ object TeacherConverter {
             sessionPricing = teacherDetailModel.sessionPricing
             language = teacherDetailModel.language
             isNew = teacherDetailModel.isNew
+            isApproved = teacherDetailModel.isApproved
         }
         return entity
     }
@@ -84,6 +86,7 @@ object TeacherConverter {
             sessionPricing = teacherDetails.sessionPricing
             language = teacherDetails.language
             isNew = teacherDetails.isNew
+            isApproved = teacherDetails.isApproved
         }
         return model
     }

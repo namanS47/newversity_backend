@@ -95,7 +95,7 @@ class AvailabilityService(
     }
 
     fun isDateSame(d1: Date, d2: Date): Boolean {
-        return d1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() == d2.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        return d1.toInstant().atZone(ZoneId.of("Asia/Kolkata")).toLocalDate() == d2.toInstant().atZone(ZoneId.of("Asia/Kolkata")).toLocalDate()
                 && isDateInFuture(d1)
     }
 

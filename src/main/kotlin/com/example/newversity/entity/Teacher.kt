@@ -55,4 +55,7 @@ class TeacherDetails(
 
         @Field("is_new")
         var isNew                       : Boolean?                       = null,
+
+        @Field("is_approved")
+        var isApproved                  : Boolean?                      = null,
 ): AppEntity()

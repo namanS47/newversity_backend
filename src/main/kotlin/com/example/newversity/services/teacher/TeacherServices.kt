@@ -58,6 +58,17 @@ class TeacherServices(
             teacherDetailModel.name?.let {
                 teacher.name = it
             }
+
+            if(teacher.mobileNumber == null) {
+                teacherDetailModel.mobileNumber?.let {
+                    teacher.mobileNumber = it
+                }
+            }
+
+            teacherDetailModel.isApproved?.let {
+                teacher.isApproved = it
+            }
+
             teacherDetailModel.introVideoUrl?.let {
                 teacher.introVideoUrl = it
             }
@@ -217,7 +228,7 @@ class TeacherServices(
             return availableTeacherListByTagName
         }
 
-        val allTeacherList= teacherRepository.findAll().filter { it.teacherId != null }
+        val allTeacherList= teacherRepository.findAll().filter { it.teacherId != null && it.isApproved == true }
         val result = arrayListOf<TeacherDetailModel>()
 
         allTeacherList.forEach {
@@ -274,7 +285,7 @@ class TeacherServices(
         teacherList.forEach {
             val teacher = getCompleteTeacherDetails(it)
             val allAvailability = availabilityService.getAllAvailabilityByTeacherIdAndDate(it)
-            if (teacher != null) {
+            if (teacher != null && teacher.isApproved == true) {
                 val teacherModel = TeacherConverter.toModel(teacher)
                 if(allAvailability.isNotEmpty()) {
                     teacherModel.nextAvailable = allAvailability[0].startDate
@@ -301,7 +312,7 @@ class TeacherServices(
         resultedTeacherIds.forEach {
             val allAvailability = availabilityService.getAllAvailabilityByTeacherIdAndDate(it)
             val teacherDetails = getCompleteTeacherDetails(it)
-            if (teacherDetails != null) {
+            if (teacherDetails != null && teacherDetails.isApproved == true) {
                 val teacherModel = TeacherConverter.toModel(teacherDetails)
                 if(allAvailability.isNotEmpty()) {
                     teacherModel.nextAvailable = allAvailability[0].startDate
@@ -311,4 +322,6 @@ class TeacherServices(
         }
         return resultedTeacherDetails + getAllTeacherDetailsByTagKeyword
     }
+
+//    fun isTeacherApproved(teacherDetailModel: TeacherDetailModel):
 }
