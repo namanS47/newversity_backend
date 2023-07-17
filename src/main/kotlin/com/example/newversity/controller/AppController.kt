@@ -2,10 +2,13 @@ package com.example.newversity.controller
 
 import com.example.newversity.model.*
 import com.example.newversity.model.payment.OrderRequestModel
+import com.example.newversity.model.payment.phonepe.PhonePeCallbackResponseModel
+import com.example.newversity.model.payment.phonepe.PhonePePGUrlRequestModel
 import com.example.newversity.services.CommonDetailService
 import com.example.newversity.services.Razorpay.RazorpayService
 import com.example.newversity.services.authservices.interceptor.ApiSecurityInterceptor
 import com.example.newversity.services.firebase.FirebaseMessagingService
+import com.example.newversity.services.phonepe.PhonePeService
 import com.example.newversity.services.teacher.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -24,7 +27,8 @@ class AppController(
         @Autowired val availabilityService: AvailabilityService,
         @Autowired val razorpayService: RazorpayService,
         @Autowired val firebaseMessagingService: FirebaseMessagingService,
-        @Autowired val commonDetailService: CommonDetailService
+        @Autowired val commonDetailService: CommonDetailService,
+        @Autowired val phonePeService: PhonePeService
 ) {
 
     @GetMapping("/")
@@ -120,5 +124,20 @@ class AppController(
     @PostMapping("/fcmToken")
     fun saveFcmToken(@RequestBody commonDetailsModel: CommonDetailsModel) {
         commonDetailService.saveCommonDetails(commonDetailsModel)
+    }
+
+    @PostMapping("/getPhonePePGUrl")
+    fun getPhonePePaymentUrl(@RequestBody phonePePGUrlRequestModel: PhonePePGUrlRequestModel): ResponseEntity<*> {
+        return phonePeService.fetchPhonePePaymentUrl(phonePePGUrlRequestModel)
+    }
+
+    @PostMapping("/phonePeCallbackUrl")
+    fun handlePhonePeCallbackUrl(@RequestBody phonePeCallbackResponseModel: PhonePeCallbackResponseModel) {
+        phonePeService.handleCallbackResponseModel(phonePeCallbackResponseModel)
+    }
+
+    @GetMapping("/phonePeTransactionStatus")
+    fun checkTransactionStatusPhonePe(@RequestParam merchantTransactionId: String): ResponseEntity<*> {
+        return phonePeService.checkTransactionStatusApi(merchantTransactionId)
     }
 }

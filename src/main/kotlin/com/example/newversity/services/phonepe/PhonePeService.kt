@@ -8,10 +8,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
+import org.springframework.http.*
 import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestTemplate
@@ -106,5 +103,51 @@ class PhonePeService(
                 phonePeTransactionStatusResponse = phonePeTransactionStatusResponseModel
         )
         phonePeTransactionRepository.save(PhonePeTransactionStatusModelConvertor.toEntity(phonePeTransactionStatusModel))
+    }
+
+    fun checkTransactionStatusApi(merchantTransactionId: String): ResponseEntity<*> {
+        val transactionDetails = phonePeTransactionRepository.findAllByMerchantTransactionId(merchantTransactionId)
+        if(transactionDetails.isPresent){
+            val transactionDetailsEntity = transactionDetails.get()
+
+            if(transactionDetailsEntity.phonePeTransactionDetailsData?.code != "PAYMENT_PENDING") {
+                return ResponseEntity.ok().body(transactionDetailsEntity)
+            } else {
+                val transactionStatus = fetchTransactionStatus(merchantTransactionId)
+                transactionDetailsEntity.phonePeTransactionDetailsData =
+                        PhonePeTransactionStatusResponseModelConvertor.toEntity(transactionStatus)
+
+                phonePeTransactionRepository.save(transactionDetailsEntity)
+
+                return ResponseEntity.ok().body(transactionDetailsEntity)
+            }
+        } else {
+            val transactionStatus = fetchTransactionStatus(merchantTransactionId)
+            val phonePeTransactionStatusModel = PhonePeTransactionStatusModel(
+                    merchantTransactionId = transactionStatus.data?.merchantTransactionId,
+                    phonePeTransactionStatusResponse = transactionStatus
+            )
+            phonePeTransactionRepository.save(PhonePeTransactionStatusModelConvertor.toEntity(phonePeTransactionStatusModel))
+
+            return ResponseEntity.ok().body(phonePeTransactionStatusModel)
+        }
+    }
+
+    fun fetchTransactionStatus(merchantTransactionId: String): PhonePeTransactionStatusResponseModel {
+        val headerString = "/pg/v1/status/$merchantId/$merchantTransactionId$saltKey"
+        val encrypted = hashString(headerString, "SHA-256") + "###1"
+        val restTemplate = RestTemplate()
+        val headers = LinkedMultiValueMap<String, String>()
+
+        headers["Content-Type"] = MediaType.APPLICATION_JSON.toString()
+        headers["X-VERIFY"] = encrypted
+        headers["accept"] = MediaType.APPLICATION_JSON.toString()
+        headers["X-MERCHANT-ID"] = merchantId
+
+        val uri = "$phonePeBaseUrl/pg/v1/status/$merchantId/$merchantTransactionId"
+
+        val entity: HttpEntity<Map<String, Any>> = HttpEntity(headers)
+        val response = restTemplate.exchange(uri, HttpMethod.GET, entity, String::class.java)
+        return Gson().fromJson(response.body, PhonePeTransactionStatusResponseModel::class.java)
     }
 }
