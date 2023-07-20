@@ -34,8 +34,8 @@ class TagsController(
     }
 
     @GetMapping("/tags")
-    fun getAllTags(): ResponseEntity<*> {
-        return tagsService.getAllTags()
+    fun getAllTags(@RequestParam adminApprove: Boolean?): ResponseEntity<*> {
+        return tagsService.getAllTags(adminApprove)
     }
 
     @PostMapping("/teacher/tags/verify")
@@ -59,5 +59,10 @@ class TagsController(
     @PostMapping("/tag/allTeacher")
     fun getAllTeacherDetailsByTagName(@RequestBody tagListModel: TagListModel) : ResponseEntity<*> {
         return ResponseEntity.ok(teacherServices.getAllAvailableTeacher(tagListModel.tagModelList))
+    }
+
+    @PostMapping("/tag/approve")
+    fun adminApproveTagList(@RequestBody tagListModel: TagListModel) : ResponseEntity<*> {
+        return ResponseEntity.ok(tagsService.approveTagsByTagName(tagListModel.tagModelList))
     }
 }

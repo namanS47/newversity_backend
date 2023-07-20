@@ -15,7 +15,10 @@ class Tags (
         var teacherTagDetailList: MutableMap<String, TeacherTagDetails>? = null,
 
         @Field("tag_category")
-        var tagCategory: String? = null
+        var tagCategory: String? = null,
+
+        @Field("admin_approve")
+        var adminApprove: Boolean? = null
 ) : AppEntity()
 
 class TeacherTagDetails(

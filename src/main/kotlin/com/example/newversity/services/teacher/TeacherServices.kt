@@ -134,7 +134,7 @@ class TeacherServices(
         var completePercentage = 0
         var suggestion: String = ""
 
-        val tagList = tagsService.getAllTagsWithTeacherId(teacherId)
+        val tagList = tagsService.getAllTagsWithTeacherId(teacherId, true)
 
         if (tagList.isNotEmpty()) {
             completePercentage += 20

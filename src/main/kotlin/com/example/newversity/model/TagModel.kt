@@ -16,6 +16,7 @@ data class TagModel (
         var tagCategory: String? = null,
         var teacherTagDetailList: MutableMap<String, TeacherTagDetailsModel>? = null,
         var teacherTagDetails: TeacherTagDetailsModel? = null,
+        var adminApprove: Boolean? = null
 )
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
@@ -48,6 +49,7 @@ object TagConvertor {
             tagName = tags.tagName
             tagCategory = tags.tagCategory
             teacherTagDetailList = teacherTagDetailListModel(tags.teacherTagDetailList)
+            adminApprove = tags.adminApprove
         }
         return model
     }
