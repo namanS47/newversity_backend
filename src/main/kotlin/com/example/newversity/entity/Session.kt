@@ -52,4 +52,11 @@ class Session(
         var studentToken: String? = null,
 
         var roomResponseModel: GenerateRoomResponseModel? = null,
+
+        @Field("payment_medium")
+        var paymentMedium: String? = null,
+
+        @Field("merchant_transaction_id")
+        var merchantTransactionId: String? = null,
+
 ) : AppEntity()

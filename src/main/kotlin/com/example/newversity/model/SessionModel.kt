@@ -35,6 +35,8 @@ data class SessionModel (
         var teacherToken: String? = null,
         var studentToken: String? = null,
         var availabilityId: String? = null,
+        var merchantTransactionId: String? = null,
+        var paymentMedium: String? = null
 )
 object SessionConvertor {
     fun toEntity(sessionModel: SessionModel): Session {
@@ -57,6 +59,8 @@ object SessionConvertor {
             cancelled = sessionModel.cancelled
             teacherToken = sessionModel.teacherToken
             studentToken = sessionModel.studentToken
+            merchantTransactionId = sessionModel.merchantTransactionId
+            paymentMedium = sessionModel.paymentMedium
         }
         return entity
     }
@@ -83,6 +87,8 @@ object SessionConvertor {
             cancelled = session.cancelled
             teacherToken = session.teacherToken
             studentToken = session.studentToken
+            merchantTransactionId = session.merchantTransactionId
+            paymentMedium = session.paymentMedium
         }
         return model
     }
