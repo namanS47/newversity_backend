@@ -3,10 +3,7 @@ package com.example.newversity.services.teacher
 import com.example.newversity.aws.s3.service.AwsS3Service
 import com.example.newversity.entity.Tags
 import com.example.newversity.entity.TeacherDetails
-import com.example.newversity.model.TagModel
-import com.example.newversity.model.TeacherConverter
-import com.example.newversity.model.TeacherDetailModel
-import com.example.newversity.model.TeacherProfilePercentageModel
+import com.example.newversity.model.*
 import com.example.newversity.repository.TeacherEducationRepository
 import com.example.newversity.repository.TeacherRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -133,50 +130,73 @@ class TeacherServices(
         val teacherProfilePercentageModel = TeacherProfilePercentageModel()
         var completePercentage = 0
         var suggestion: String = ""
+        val profileCompletionStageStatus: HashMap<ProfileCompletionStage, Boolean> = hashMapOf()
 
         val tagList = tagsService.getAllTagsWithTeacherId(teacherId, true)
 
-        if (tagList.isNotEmpty()) {
-            completePercentage += 20
-        } else {
-            suggestion = "please add tags"
-        }
-
         var isAnyTagVerified = false
+        var isVerificationInProcess = false
 
         tagList.forEach {
             if (it.teacherTagDetailList!![teacherId]?.tagStatus == TagStatus.Verified) {
                 isAnyTagVerified = true
+            } else if (it.teacherTagDetailList!![teacherId]?.tagStatus == TagStatus.InProcess) {
+                isVerificationInProcess = true
             }
         }
 
-        if (isAnyTagVerified) {
+        if (isAnyTagVerified || isVerificationInProcess) {
+            profileCompletionStageStatus[ProfileCompletionStage.VerifiedTags] = true
+            completePercentage += 10
+        } else {
+            profileCompletionStageStatus[ProfileCompletionStage.VerifiedTags] = false
+            suggestion = "Please upload document proof"
+        }
+
+        if (tagList.isNotEmpty()) {
+            profileCompletionStageStatus[ProfileCompletionStage.SelectTags] = true
             completePercentage += 20
         } else {
-            suggestion = "please upload document proof"
+            profileCompletionStageStatus[ProfileCompletionStage.SelectTags] = false
+            suggestion = "Please add tags"
+        }
+
+        if(checkForPricing(teacherId)) {
+            profileCompletionStageStatus[ProfileCompletionStage.Pricing] = true
+            completePercentage += 10
+        } else {
+            profileCompletionStageStatus[ProfileCompletionStage.Pricing] = false
+            suggestion = "Please add session fees"
         }
 
         if (checkForExperience(teacherId)) {
+            profileCompletionStageStatus[ProfileCompletionStage.Experience] = true
             completePercentage += 20
         } else {
+            profileCompletionStageStatus[ProfileCompletionStage.Experience] = false
             suggestion = "Add Experience"
         }
 
         if (checkForEducation(teacherId)) {
+            profileCompletionStageStatus[ProfileCompletionStage.Education] = true
             completePercentage += 20
         } else {
+            profileCompletionStageStatus[ProfileCompletionStage.Education] = false
             suggestion = "Add Education Details"
         }
 
         if (checkForPersonalInformation(teacherId)) {
+            profileCompletionStageStatus[ProfileCompletionStage.Profile] = true
             completePercentage += 20
         } else {
+            profileCompletionStageStatus[ProfileCompletionStage.Profile] = false
             suggestion = "Complete personal Info"
         }
 
         teacherProfilePercentageModel.apply {
             this.completePercentage = completePercentage
             this.suggestion = suggestion
+            this.profileCompletionStageStatus = profileCompletionStageStatus
         }
         return ResponseEntity.ok().body(teacherProfilePercentageModel)
     }
@@ -187,6 +207,16 @@ class TeacherServices(
             val teacher = teacherDetailsEntity.get()
             !(teacher.name.isNullOrEmpty() || teacher.profilePictureUrl.isNullOrEmpty() || teacher.title.isNullOrEmpty()
                     || teacher.info.isNullOrEmpty() || teacher.location.isNullOrEmpty() || teacher.language.isNullOrEmpty())
+        } else {
+            false
+        }
+    }
+
+    fun checkForPricing(teacherId: String): Boolean {
+        val teacherDetailsEntity = teacherRepository.findByTeacherId(teacherId)
+        return if(teacherDetailsEntity.isPresent) {
+            val teacher = teacherDetailsEntity.get()
+            !teacher.sessionPricing.isNullOrEmpty()
         } else {
             false
         }
