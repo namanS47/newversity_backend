@@ -78,6 +78,9 @@ class TeacherServices(
             teacherDetailModel.info?.let {
                 teacher.info = it
             }
+            teacherDetailModel.email?.let {
+                teacher.email = it
+            }
 //            teacherDetailModel.tags?.let {
 //                tagsService.updateTagList(it, teacher.tags ?: arrayListOf(), teacher.teacherId ?: "")
 //                teacher.tags = it
