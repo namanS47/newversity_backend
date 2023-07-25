@@ -96,7 +96,7 @@ class AvailabilityService(
             if(endDateDifference/60000 >= 45) {
                 val newAvailability = AvailabilityModel(
                         teacherId = bookedAvailabilityModel.teacherId,
-                        startDate = Date(startDate.time + 15*60000),
+                        startDate = Date(endDate.time + 15*60000),
                         endDate = bookedAvailabilityModel.endDate,
                         sessionType = bookedAvailabilityModel.sessionType,
                         booked = false

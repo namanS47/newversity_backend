@@ -36,12 +36,11 @@ class TagsService(
         mapNewTags(tagList, teacherId)
     }
 
-    fun getAllTags(adminApprove: Boolean?): ResponseEntity<*> {
-        val allTags =  tagsRepository.findAll().filter { adminApprove == false || it.adminApprove == true }
+    fun getAllTags(adminApprove: Boolean?): List<TagModel>{
+        return tagsRepository.findAll().filter { adminApprove == false || it.adminApprove == true }
                 .map {
             TagConvertor.toAllTagModel(it)
         }
-        return ResponseEntity.ok(allTags)
     }
 
     fun getAllTagsWithTeacherId(teacherId: String, filterByAdminApproval: Boolean): List<Tags> {

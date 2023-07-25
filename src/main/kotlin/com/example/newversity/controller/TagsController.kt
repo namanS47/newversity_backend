@@ -35,7 +35,7 @@ class TagsController(
 
     @GetMapping("/tags")
     fun getAllTags(@RequestParam adminApprove: Boolean?): ResponseEntity<*> {
-        return tagsService.getAllTags(adminApprove)
+        return ResponseEntity.ok().body(tagsService.getAllTags(adminApprove))
     }
 
     @PostMapping("/teacher/tags/verify")
@@ -48,7 +48,7 @@ class TagsController(
 
     @GetMapping("tag/search")
     fun getAllTagsBySearchKeyword(@RequestParam tag: String) : ResponseEntity<*> {
-        return searchService.searchTag(tag)
+        return searchService.searchTags(tag)
     }
 
     @GetMapping("/tag")

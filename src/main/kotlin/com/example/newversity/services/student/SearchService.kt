@@ -1,6 +1,6 @@
 package com.example.newversity.services.student
 
-import com.example.newversity.repository.TagsRepository
+import com.example.newversity.services.teacher.TagsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -8,15 +8,12 @@ import java.util.*
 
 @Service
 class SearchService(
-        @Autowired val tagsRepository: TagsRepository
+        @Autowired val tagsService: TagsService
 ) {
-    fun searchTag(tagName: String) : ResponseEntity<*> {
-        val allTagsList = tagsRepository.findAll().map {
-            it.tagName
+    fun searchTags(tagName: String): ResponseEntity<*> {
+        val allTagsList = tagsService.getAllTags(true).filter {
+            it.tagName?.lowercase(Locale.getDefault())?.contains(tagName.lowercase(Locale.getDefault())) ?: false
         }
-        val resultedTags = allTagsList.filter {
-            it?.lowercase(Locale.getDefault())?.contains(tagName.lowercase(Locale.getDefault())) ?: false
-        }
-        return ResponseEntity.ok(resultedTags)
+        return ResponseEntity.ok(allTagsList)
     }
 }

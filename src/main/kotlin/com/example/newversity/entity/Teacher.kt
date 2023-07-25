@@ -1,5 +1,6 @@
 package com.example.newversity.entity
 
+import com.example.newversity.model.TagModel
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 import java.util.*
@@ -36,7 +37,7 @@ class TeacherDetails(
         @Field("uploaded_documents")
         var uploadedDocuments           :List<String>?                  = null,
 
-        var tags                        :List<String>?                  = null,
+        var tags                        :List<TagModel>?                  = null,
 
         var education                   :String?                        = null,
 

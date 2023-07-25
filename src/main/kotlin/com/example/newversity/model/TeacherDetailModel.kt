@@ -21,7 +21,7 @@ data class TeacherDetailModel(
         var title: String? = null,
         var info: String? = null,
         var uploadedDocuments: List<String>? = null,
-        var tags: List<String>? = null,
+        var tags: List<TagModel>? = null,
         var education: String? = null,
         var designation: String? = null,
         var profileUrl: String? = null,

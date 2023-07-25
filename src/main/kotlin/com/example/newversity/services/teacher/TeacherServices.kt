@@ -243,8 +243,6 @@ class TeacherServices(
             if (tagList.isNotEmpty()) {
                 teacher.tags = tagList.filter {
                     !it.tagName.isNullOrEmpty()
-                }.map {
-                    it.tagName!!
                 }
             }
             return teacher
@@ -272,8 +270,6 @@ class TeacherServices(
             if (tagList.isNotEmpty()) {
                 it.tags = tagList.filter {it1->
                     !it1.tagName.isNullOrEmpty()
-                }.map {it1->
-                    it1.tagName!!
                 }
             }
 
