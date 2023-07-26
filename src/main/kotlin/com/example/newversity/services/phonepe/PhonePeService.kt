@@ -110,8 +110,8 @@ class PhonePeService(
         if(transactionDetails.isPresent){
             val transactionDetailsEntity = transactionDetails.get()
 
-            if(transactionDetailsEntity.phonePeTransactionDetailsData?.code != "PAYMENT_PENDING") {
-                return ResponseEntity.ok().body(transactionDetailsEntity)
+            return if(transactionDetailsEntity.phonePeTransactionDetailsData?.code != "PAYMENT_PENDING") {
+                ResponseEntity.ok().body(transactionDetailsEntity)
             } else {
                 val transactionStatus = fetchTransactionStatus(merchantTransactionId)
                 transactionDetailsEntity.phonePeTransactionDetailsData =
@@ -119,7 +119,7 @@ class PhonePeService(
 
                 phonePeTransactionRepository.save(transactionDetailsEntity)
 
-                return ResponseEntity.ok().body(transactionDetailsEntity)
+                ResponseEntity.ok().body(transactionDetailsEntity)
             }
         } else {
             val transactionStatus = fetchTransactionStatus(merchantTransactionId)
@@ -127,9 +127,10 @@ class PhonePeService(
                     merchantTransactionId = transactionStatus.data?.merchantTransactionId,
                     phonePeTransactionStatusResponse = transactionStatus
             )
-            phonePeTransactionRepository.save(PhonePeTransactionStatusModelConvertor.toEntity(phonePeTransactionStatusModel))
+            val phonePeTransactionStatusEntity = PhonePeTransactionStatusModelConvertor.toEntity(phonePeTransactionStatusModel)
+            phonePeTransactionRepository.save(phonePeTransactionStatusEntity)
 
-            return ResponseEntity.ok().body(phonePeTransactionStatusModel)
+            return ResponseEntity.ok().body(phonePeTransactionStatusEntity)
         }
     }
 
