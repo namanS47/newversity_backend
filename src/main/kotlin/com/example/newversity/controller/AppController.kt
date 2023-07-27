@@ -137,7 +137,7 @@ class AppController(
     }
 
     @GetMapping("/phonePeTransactionStatus")
-    fun checkTransactionStatusPhonePe(@RequestParam merchantTransactionId: String): ResponseEntity<*> {
+    fun checkTransactionStatusPhonePe(@RequestHeader merchantTransactionId: String): ResponseEntity<*> {
         return phonePeService.checkTransactionStatusApi(merchantTransactionId)
     }
 }

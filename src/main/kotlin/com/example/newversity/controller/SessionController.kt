@@ -1,5 +1,6 @@
 package com.example.newversity.controller
 
+import com.amazonaws.Response
 import com.example.newversity.model.SessionModel
 import com.example.newversity.services.teacher.SessionService
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,5 +30,10 @@ class SessionController(
     @GetMapping("/student")
     fun getSessionByStudentId(@RequestHeader studentId: String, @RequestParam("type") type: String = ""): ResponseEntity<*> {
         return sessionService.getSessionByStudentId(studentId, type)
+    }
+
+    @GetMapping("/count")
+    fun getTotalSessionCount(@RequestHeader teacherId: String) : ResponseEntity<*> {
+        return sessionService.getAllSessionCountByTeacherId(teacherId)
     }
 }

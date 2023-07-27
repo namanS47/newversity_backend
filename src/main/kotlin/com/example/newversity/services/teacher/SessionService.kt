@@ -3,6 +3,7 @@ package com.example.newversity.services.teacher
 import com.example.newversity.entity.Session
 import com.example.newversity.model.SessionConvertor
 import com.example.newversity.model.SessionModel
+import com.example.newversity.model.student.SessionCountModel
 import com.example.newversity.repository.SessionRepository
 import com.example.newversity.repository.students.StudentRepository
 import com.example.newversity.services.room.RoomService
@@ -20,6 +21,15 @@ class SessionService(
         @Autowired val teacherServices: TeacherServices,
         @Autowired val availabilityService: AvailabilityService
 ) {
+
+    fun getAllSessionCountByTeacherId(teacherId: String): ResponseEntity<*> {
+        val sessionCount = sessionRepository.findAllByTeacherId(teacherId).count()
+        val sessionCountModel = SessionCountModel()
+        sessionCountModel.apply {
+            totalSessionCount = sessionCount
+        }
+        return ResponseEntity.ok(sessionCountModel)
+    }
 
     fun addSession(sessionModel: SessionModel): ResponseEntity<*> {
         sessionModel.id?.let {
