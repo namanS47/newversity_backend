@@ -140,4 +140,9 @@ class AppController(
     fun checkTransactionStatusPhonePe(@RequestHeader merchantTransactionId: String): ResponseEntity<*> {
         return phonePeService.checkTransactionStatusApi(merchantTransactionId)
     }
+
+    @GetMapping("/app/android/version")
+    fun getAppVersionDetails() : ResponseEntity<*> {
+        return commonDetailService.getAppVersionDetails()
+    }
 }
