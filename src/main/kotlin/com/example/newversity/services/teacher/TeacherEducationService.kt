@@ -29,4 +29,9 @@ class TeacherEducationService(
     fun getAllTeacherEducationDetailsList(teacherId: String) : List<TeacherEducation> {
         return teacherEducationRepository.findAllByTeacherId(teacherId)
     }
+
+    fun deleteTeacherEducation(educationId: String) : ResponseEntity<*> {
+        teacherEducationRepository.deleteById(educationId)
+        return ResponseEntity.ok(true)
+    }
 }
