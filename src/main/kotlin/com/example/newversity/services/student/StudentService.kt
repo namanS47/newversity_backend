@@ -117,7 +117,7 @@ class StudentService(
             if(!student.profilePictureUrl.isNullOrEmpty()) {
                 completePercentage += 20
             } else {
-                suggestion = "Please provide profile picture url"
+                suggestion = "Please provide profile picture"
             }
 
             if(!student.tags.isNullOrEmpty()) {
