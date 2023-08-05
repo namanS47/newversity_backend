@@ -9,9 +9,11 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.ModelAndView
+import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import javax.security.sasl.AuthenticationException
+
 
 @Component
 class ApiSecurityInterceptor : HandlerInterceptor {
@@ -48,7 +50,8 @@ class ApiSecurityInterceptor : HandlerInterceptor {
     }
 
     fun byPassAuth(request: HttpServletRequest) :Boolean{
-        return request.method == "GET" && request.requestURI == "/"
+        return true
+//        return request.method == "GET" && request.requestURI == "/"
     }
 
     companion object {
@@ -63,5 +66,13 @@ class ServiceInterceptorAppConfig : WebMvcConfigurer {
     var productServiceInterceptor: ApiSecurityInterceptor? = null
     override fun addInterceptors(registry: InterceptorRegistry) {
         productServiceInterceptor?.let { registry.addInterceptor(it) }
+    }
+
+    override fun addCorsMappings(registry: CorsRegistry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*") // Replace with your actual frontend domain
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+//                .allowCredentials(true)
     }
 }

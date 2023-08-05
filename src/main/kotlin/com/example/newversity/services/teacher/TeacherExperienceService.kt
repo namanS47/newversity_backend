@@ -25,4 +25,9 @@ class TeacherExperienceService(
     fun getAllExperienceListByTeacherId(teacherId: String): List<TeacherExperience> {
         return teacherExperienceRepository.findAllByTeacherId(teacherId)
     }
+
+    fun deleteTeacherExperience(id: String) : ResponseEntity<*> {
+        teacherExperienceRepository.deleteById(id)
+        return ResponseEntity.ok(true)
+    }
 }

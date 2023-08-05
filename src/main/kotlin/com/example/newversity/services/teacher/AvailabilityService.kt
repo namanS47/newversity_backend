@@ -117,9 +117,9 @@ class AvailabilityService(
     }
 
     fun isAvailabilityOverlapping(availabilityModelOne: AvailabilityModel, availability: Availability) :Boolean {
-        return (availabilityModelOne.startDate!! >= availability.startDate && availabilityModelOne.startDate!! <= availability.endDate) ||
-                (availabilityModelOne.endDate!! <= availability.endDate && availabilityModelOne.endDate!! >= availability.startDate)
-                || (availabilityModelOne.startDate!! <= availability.startDate && availabilityModelOne.endDate!! > availability.endDate)
+        return (availabilityModelOne.startDate!! >= availability.startDate && availabilityModelOne.startDate!! < availability.endDate) ||
+                (availabilityModelOne.endDate!! <= availability.endDate && availabilityModelOne.endDate!! > availability.startDate)
+                || (availabilityModelOne.startDate!! <= availability.startDate && availabilityModelOne.endDate!! >= availability.endDate)
     }
 
     fun isDateSame(d1: Date, d2: Date): Boolean {

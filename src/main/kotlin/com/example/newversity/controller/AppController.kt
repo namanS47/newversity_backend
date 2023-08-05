@@ -59,6 +59,11 @@ class AppController(
         return teacherExperienceService.getAllTeacherExperience(teacherId)
     }
 
+    @DeleteMapping("/teacher/experience")
+    fun deleteTeacherExperience(@RequestHeader id: String): ResponseEntity<*> {
+        return teacherExperienceService.deleteTeacherExperience(id)
+    }
+
     @PostMapping("/teacher/education")
     fun addEducation(@RequestBody teacherEducationModel: TeacherEducationModel): ResponseEntity<*> {
         return teacherEducationService.addTeacherEducationDetails(teacherEducationModel)
@@ -67,6 +72,11 @@ class AppController(
     @GetMapping("teacher/education")
     fun getAllTeacherEducationDetails(@RequestHeader teacherId: String): ResponseEntity<*> {
         return teacherEducationService.getAllTeacherEducationDetails(teacherId)
+    }
+
+    @DeleteMapping("teacher/education")
+    fun deleteTeacherEducationDetails(@RequestHeader educationDetailId: String): ResponseEntity<*> {
+        return teacherEducationService.deleteTeacherEducation(educationDetailId)
     }
 
     @PostMapping("/teacher/availability")
@@ -139,5 +149,10 @@ class AppController(
     @GetMapping("/phonePeTransactionStatus")
     fun checkTransactionStatusPhonePe(@RequestHeader merchantTransactionId: String): ResponseEntity<*> {
         return phonePeService.checkTransactionStatusApi(merchantTransactionId)
+    }
+
+    @GetMapping("/app/android/version")
+    fun getAppVersionDetails() : ResponseEntity<*> {
+        return commonDetailService.getAppVersionDetails()
     }
 }

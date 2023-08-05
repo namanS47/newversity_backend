@@ -58,10 +58,10 @@ class SessionService(
         currentTime.time = System.currentTimeMillis() - 30 * 60 * 1000
         val upcomingSessionList = sessionList.filter {
             it.startDate!! > currentTime
-        }
+        }.sortedBy { it.startDate }
         val previousSessionList = sessionList.filter {
             it.startDate!! <= currentTime
-        }
+        }.sortedByDescending { it.startDate }
 
         return when (type) {
             "upcoming" -> {
@@ -94,10 +94,10 @@ class SessionService(
         currentTime.time = System.currentTimeMillis() - 30 * 60 * 1000
         val upcomingSessionList = sessionList.filter {
             it.startDate!! > currentTime
-        }
+        }.sortedBy { it.startDate }
         val previousSessionList = sessionList.filter {
             it.startDate!! <= currentTime
-        }
+        }.sortedByDescending { it.startDate }
         return when (type) {
             "upcoming" -> {
                 ResponseEntity.ok(upcomingSessionList.map {
