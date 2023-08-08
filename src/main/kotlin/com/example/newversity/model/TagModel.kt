@@ -1,7 +1,7 @@
 package com.example.newversity.model
 
-import com.example.newversity.entity.Tags
-import com.example.newversity.entity.TeacherTagDetails
+import com.example.newversity.entity.teacher.Tags
+import com.example.newversity.entity.teacher.TeacherTagDetails
 import com.example.newversity.services.teacher.TagStatus
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming

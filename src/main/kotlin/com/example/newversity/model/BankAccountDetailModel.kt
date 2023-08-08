@@ -1,6 +1,6 @@
 package com.example.newversity.model
 
-import com.example.newversity.entity.BankAccountDetail
+import com.example.newversity.entity.teacher.BankAccountDetail
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 

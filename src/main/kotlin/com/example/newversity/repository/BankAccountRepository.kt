@@ -1,6 +1,6 @@
 package com.example.newversity.repository
 
-import com.example.newversity.entity.BankAccountDetail
+import com.example.newversity.entity.teacher.BankAccountDetail
 import org.springframework.data.mongodb.repository.MongoRepository
 import java.util.Optional
 

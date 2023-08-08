@@ -1,7 +1,7 @@
 package com.example.newversity.model
 
-import com.example.newversity.entity.Session
-import com.example.newversity.entity.TeacherDetails
+import com.example.newversity.entity.teacher.Session
+import com.example.newversity.entity.teacher.TeacherDetails
 import com.example.newversity.entity.students.Student
 import com.example.newversity.model.student.StudentConverter
 import com.example.newversity.model.student.StudentDetailModel

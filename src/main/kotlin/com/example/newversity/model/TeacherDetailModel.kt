@@ -1,6 +1,6 @@
 package com.example.newversity.model
 
-import com.example.newversity.entity.TeacherDetails
+import com.example.newversity.entity.teacher.TeacherDetails
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
@@ -35,7 +35,7 @@ data class TeacherDetailModel(
 )
 
 object TeacherConverter {
-    fun toEntity(teacherDetailModel: TeacherDetailModel):TeacherDetails {
+    fun toEntity(teacherDetailModel: TeacherDetailModel): TeacherDetails {
         val entity= TeacherDetails()
 
         entity.apply {

@@ -1,14 +1,12 @@
 package com.example.newversity.services.room
 
-import com.example.newversity.entity.Session
+import com.example.newversity.entity.teacher.Session
 import com.example.newversity.model.room.GenerateRoomResponseModel
 import com.google.gson.Gson
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import org.bson.json.JsonObject
 import org.springframework.http.HttpEntity
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestTemplate

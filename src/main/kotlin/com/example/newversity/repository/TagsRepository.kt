@@ -1,6 +1,6 @@
 package com.example.newversity.repository
 
-import com.example.newversity.entity.Tags
+import com.example.newversity.entity.teacher.Tags
 import org.springframework.data.mongodb.repository.MongoRepository
 import java.util.Optional
 

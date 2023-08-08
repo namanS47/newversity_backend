@@ -1,8 +1,8 @@
 package com.example.newversity.services.teacher
 
 import com.example.newversity.aws.s3.service.AwsS3Service
-import com.example.newversity.entity.Tags
-import com.example.newversity.entity.TeacherTagDetails
+import com.example.newversity.entity.teacher.Tags
+import com.example.newversity.entity.teacher.TeacherTagDetails
 import com.example.newversity.model.*
 import com.example.newversity.repository.TagsRepository
 import org.springframework.beans.factory.annotation.Autowired

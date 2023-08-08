@@ -1,6 +1,6 @@
 package com.example.newversity.services.teacher
 
-import com.example.newversity.entity.TeacherEducation
+import com.example.newversity.entity.teacher.TeacherEducation
 import com.example.newversity.model.TeacherEducationConvertor
 import com.example.newversity.model.TeacherEducationModel
 import com.example.newversity.repository.TeacherEducationRepository

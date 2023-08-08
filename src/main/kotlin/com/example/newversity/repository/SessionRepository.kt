@@ -1,6 +1,6 @@
 package com.example.newversity.repository
 
-import com.example.newversity.entity.Session
+import com.example.newversity.entity.teacher.Session
 import org.springframework.data.mongodb.repository.MongoRepository
 
 interface SessionRepository : MongoRepository<Session, String> {

@@ -1,6 +1,6 @@
 package com.example.newversity.services.teacher
 
-import com.example.newversity.entity.Session
+import com.example.newversity.entity.teacher.Session
 import com.example.newversity.model.SessionConvertor
 import com.example.newversity.model.SessionModel
 import com.example.newversity.model.student.SessionCountModel

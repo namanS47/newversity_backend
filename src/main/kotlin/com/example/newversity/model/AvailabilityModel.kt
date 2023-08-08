@@ -1,11 +1,9 @@
 package com.example.newversity.model
 
-import com.example.newversity.entity.Availability
+import com.example.newversity.entity.teacher.Availability
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
-import java.time.LocalDateTime
-import java.time.ZoneId
 import java.util.*
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)

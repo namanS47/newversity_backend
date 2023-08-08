@@ -1,4 +1,4 @@
-package com.example.newversity.entity
+package com.example.newversity.entity.teacher
 
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field

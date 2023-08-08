@@ -1,6 +1,6 @@
 package com.example.newversity.services.teacher
 
-import com.example.newversity.entity.Availability
+import com.example.newversity.entity.teacher.Availability
 import com.example.newversity.model.AvailabilityConverter
 import com.example.newversity.model.AvailabilityModel
 import com.example.newversity.model.EmptyJsonResponse

@@ -1,4 +1,4 @@
-package com.example.newversity.entity
+package com.example.newversity.entity.teacher
 
 import com.example.newversity.services.teacher.TagStatus
 import org.springframework.data.mongodb.core.index.Indexed

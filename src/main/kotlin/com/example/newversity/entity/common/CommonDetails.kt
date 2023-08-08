@@ -1,6 +1,6 @@
 package com.example.newversity.entity.common
 
-import com.example.newversity.entity.AppEntity
+import com.example.newversity.entity.teacher.AppEntity
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 

@@ -1,17 +1,23 @@
-package com.example.newversity.entity
+package com.example.newversity.entity.teacher
 
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 import java.util.*
 
-@Document(collection = "teacher_education")
-class TeacherEducation(
+@Document(collection = "teacher_experience")
+class TeacherExperience(
         @Field("teacher_id")
         var teacherId: String? = null,
 
-        var name: String? = null,
+        var title: String? = null,
 
-        var degree: String? = null,
+        @Field("employment_type")
+        var employmentType: String? = null,
+
+        @Field("company_name")
+        var companyName: String? = null,
+
+        var location: String? = null,
 
         @Field("start_date")
         var startDate: Date? = null,
@@ -21,6 +27,4 @@ class TeacherEducation(
 
         @Field("currently_working_here")
         var currentlyWorkingHere: Boolean? = null,
-
-        var grade: String? = null,
 ): AppEntity()
