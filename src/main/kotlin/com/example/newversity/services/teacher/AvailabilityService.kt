@@ -4,7 +4,7 @@ import com.example.newversity.entity.teacher.Availability
 import com.example.newversity.model.teacher.AvailabilityConverter
 import com.example.newversity.model.teacher.AvailabilityModel
 import com.example.newversity.model.EmptyJsonResponse
-import com.example.newversity.repository.AvailabilityRepository
+import com.example.newversity.repository.teacher.AvailabilityRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

@@ -3,7 +3,7 @@ package com.example.newversity.services.teacher
 import com.example.newversity.model.teacher.BankAccountDetailConvertor
 import com.example.newversity.model.teacher.BankAccountDetailModel
 import com.example.newversity.model.EmptyJsonResponse
-import com.example.newversity.repository.BankAccountRepository
+import com.example.newversity.repository.teacher.BankAccountRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

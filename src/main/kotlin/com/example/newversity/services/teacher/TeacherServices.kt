@@ -8,8 +8,8 @@ import com.example.newversity.model.teacher.ProfileCompletionStage
 import com.example.newversity.model.teacher.TeacherConverter
 import com.example.newversity.model.teacher.TeacherDetailModel
 import com.example.newversity.model.teacher.TeacherProfilePercentageModel
-import com.example.newversity.repository.TeacherEducationRepository
-import com.example.newversity.repository.TeacherRepository
+import com.example.newversity.repository.teacher.TeacherEducationRepository
+import com.example.newversity.repository.teacher.TeacherRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

@@ -1,4 +1,4 @@
-package com.example.newversity.repository
+package com.example.newversity.repository.teacher
 
 import com.example.newversity.entity.teacher.BankAccountDetail
 import org.springframework.data.mongodb.repository.MongoRepository

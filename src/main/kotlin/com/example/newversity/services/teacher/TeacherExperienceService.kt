@@ -3,7 +3,7 @@ package com.example.newversity.services.teacher
 import com.example.newversity.entity.teacher.TeacherExperience
 import com.example.newversity.model.teacher.TeacherExperienceConverter
 import com.example.newversity.model.teacher.TeacherExperienceModel
-import com.example.newversity.repository.TeacherExperienceRepository
+import com.example.newversity.repository.teacher.TeacherExperienceRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
