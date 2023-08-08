@@ -1,8 +1,8 @@
 package com.example.newversity.services.teacher
 
 import com.example.newversity.entity.teacher.TeacherEducation
-import com.example.newversity.model.TeacherEducationConvertor
-import com.example.newversity.model.TeacherEducationModel
+import com.example.newversity.model.teacher.TeacherEducationConvertor
+import com.example.newversity.model.teacher.TeacherEducationModel
 import com.example.newversity.repository.TeacherEducationRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity

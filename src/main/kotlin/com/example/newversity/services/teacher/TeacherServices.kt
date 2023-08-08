@@ -4,6 +4,10 @@ import com.example.newversity.aws.s3.service.AwsS3Service
 import com.example.newversity.entity.teacher.Tags
 import com.example.newversity.entity.teacher.TeacherDetails
 import com.example.newversity.model.*
+import com.example.newversity.model.teacher.ProfileCompletionStage
+import com.example.newversity.model.teacher.TeacherConverter
+import com.example.newversity.model.teacher.TeacherDetailModel
+import com.example.newversity.model.teacher.TeacherProfilePercentageModel
 import com.example.newversity.repository.TeacherEducationRepository
 import com.example.newversity.repository.TeacherRepository
 import org.springframework.beans.factory.annotation.Autowired

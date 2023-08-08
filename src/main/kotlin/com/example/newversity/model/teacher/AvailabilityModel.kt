@@ -1,4 +1,4 @@
-package com.example.newversity.model
+package com.example.newversity.model.teacher
 
 import com.example.newversity.entity.teacher.Availability
 import com.fasterxml.jackson.annotation.JsonFormat

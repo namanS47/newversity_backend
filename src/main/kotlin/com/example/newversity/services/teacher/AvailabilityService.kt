@@ -1,8 +1,8 @@
 package com.example.newversity.services.teacher
 
 import com.example.newversity.entity.teacher.Availability
-import com.example.newversity.model.AvailabilityConverter
-import com.example.newversity.model.AvailabilityModel
+import com.example.newversity.model.teacher.AvailabilityConverter
+import com.example.newversity.model.teacher.AvailabilityModel
 import com.example.newversity.model.EmptyJsonResponse
 import com.example.newversity.repository.AvailabilityRepository
 import org.springframework.beans.factory.annotation.Autowired

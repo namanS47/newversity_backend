@@ -1,7 +1,7 @@
 package com.example.newversity.services.teacher
 
-import com.example.newversity.model.BankAccountDetailConvertor
-import com.example.newversity.model.BankAccountDetailModel
+import com.example.newversity.model.teacher.BankAccountDetailConvertor
+import com.example.newversity.model.teacher.BankAccountDetailModel
 import com.example.newversity.model.EmptyJsonResponse
 import com.example.newversity.repository.BankAccountRepository
 import org.springframework.beans.factory.annotation.Autowired

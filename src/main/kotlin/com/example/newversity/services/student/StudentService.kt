@@ -1,7 +1,7 @@
 package com.example.newversity.services.student
 
 import com.example.newversity.aws.s3.service.AwsS3Service
-import com.example.newversity.model.TeacherProfilePercentageModel
+import com.example.newversity.model.teacher.TeacherProfilePercentageModel
 import com.example.newversity.model.student.StudentConverter
 import com.example.newversity.model.student.StudentDetailModel
 import com.example.newversity.repository.students.StudentRepository

@@ -4,9 +4,9 @@ import com.example.newversity.model.*
 import com.example.newversity.model.payment.OrderRequestModel
 import com.example.newversity.model.payment.phonepe.PhonePeCallbackResponseModel
 import com.example.newversity.model.payment.phonepe.PhonePePGUrlRequestModel
+import com.example.newversity.model.teacher.*
 import com.example.newversity.services.CommonDetailService
 import com.example.newversity.services.Razorpay.RazorpayService
-import com.example.newversity.services.authservices.interceptor.ApiSecurityInterceptor
 import com.example.newversity.services.firebase.FirebaseMessagingService
 import com.example.newversity.services.phonepe.PhonePeService
 import com.example.newversity.services.teacher.*

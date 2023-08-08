@@ -1,4 +1,4 @@
-package com.example.newversity.model
+package com.example.newversity.model.teacher
 
 import com.example.newversity.entity.teacher.TeacherExperience
 import com.fasterxml.jackson.databind.PropertyNamingStrategy

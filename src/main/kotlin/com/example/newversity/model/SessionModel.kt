@@ -5,6 +5,8 @@ import com.example.newversity.entity.teacher.TeacherDetails
 import com.example.newversity.entity.students.Student
 import com.example.newversity.model.student.StudentConverter
 import com.example.newversity.model.student.StudentDetailModel
+import com.example.newversity.model.teacher.TeacherConverter
+import com.example.newversity.model.teacher.TeacherDetailModel
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
