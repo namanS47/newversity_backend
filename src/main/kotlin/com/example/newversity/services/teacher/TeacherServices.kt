@@ -306,8 +306,9 @@ class TeacherServices(
             tag.teacherTagDetailList?.forEach {
                 val teacherId = it.key
                 val tagDetail = it.value
-                //TODO: Naman: remove unverified tags
-                if (tagDetail.tagStatus == TagStatus.Verified || tagDetail.tagStatus == TagStatus.Unverified) {
+                //TODO: Naman: remove unverified tags and inProcess tags
+                if (tagDetail.tagStatus == TagStatus.Verified || tagDetail.tagStatus == TagStatus.Unverified ||
+                        tagDetail.tagStatus == TagStatus.InProcess) {
                     teacherList.add(teacherId)
                 }
             }
