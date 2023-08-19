@@ -1,11 +1,13 @@
 package com.example.newversity.services.teacher
 
 import com.example.newversity.entity.teacher.Session
+import com.example.newversity.model.NotificationDetailsModel
 import com.example.newversity.model.SessionConvertor
 import com.example.newversity.model.SessionModel
 import com.example.newversity.model.student.SessionCountModel
 import com.example.newversity.repository.SessionRepository
 import com.example.newversity.repository.students.StudentRepository
+import com.example.newversity.services.firebase.FirebaseMessagingService
 import com.example.newversity.services.room.RoomService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -19,7 +21,8 @@ class SessionService(
         @Autowired val studentRepository: StudentRepository,
         @Autowired val roomService: RoomService,
         @Autowired val teacherServices: TeacherServices,
-        @Autowired val availabilityService: AvailabilityService
+        @Autowired val availabilityService: AvailabilityService,
+        @Autowired val firebaseMessagingService: FirebaseMessagingService
 ) {
 
     fun getAllSessionCountByTeacherId(teacherId: String): ResponseEntity<*> {
@@ -45,6 +48,17 @@ class SessionService(
                 sessionDetail = roomService.sessionAuthTokenForRoom(sessionDetail)
                 sessionModel.let { availabilityService.bookAvailability(it.availabilityId!!, it.startDate!!, it.endDate!!) }
                 sessionDetail = sessionRepository.save(sessionDetail)
+
+                //Send push notification
+                //TODO: make this notification service async
+                val notificationDetailsModel = NotificationDetailsModel()
+                notificationDetailsModel.apply {
+                    userIds = listOf(sessionModel.teacherId!!)
+                    title = "Hii Mentor"
+                    body = "A student has booked your session"
+                }
+                firebaseMessagingService.sendBulkNotification(notificationDetailsModel)
+
                 return ResponseEntity.ok().body(SessionConvertor.toModel(sessionDetail, null, null))
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Incomplete details"))

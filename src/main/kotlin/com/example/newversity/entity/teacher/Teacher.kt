@@ -9,54 +9,56 @@ import kotlin.collections.HashMap
 @Document(collection = "teacher")
 class TeacherDetails(
         @Field("user_id")
-        var userId                      :String?                         = null,
+        var userId: String? = null,
 
         @Field("teacher_id")
-        var teacherId                   :String?                        = null,
+        var teacherId: String? = null,
 
-        var name                        : String?                       = null,
+        var name: String? = null,
 
         @Field("mobile_number")
-        var mobileNumber                : String?                       = null,
+        var mobileNumber: String? = null,
 
-        var email                       :String?                        = null,
+        var email: String? = null,
 
         @Field("intro_video_url")
-        var introVideoUrl               : String?                       = null,
+        var introVideoUrl: String? = null,
 
-        var location                    : String?                       = null,
+        var location: String? = null,
 
-        var gender                      : String?                       = null,
+        var gender: String? = null,
 
-        var age                         : String?                       = null,
+        var age: String? = null,
 
-        var title                       : String?                       = null,
+        var title: String? = null,
 
-        var info                        : String?                       = null,
+        var info: String? = null,
 
         @Field("uploaded_documents")
-        var uploadedDocuments           :List<String>?                  = null,
+        var uploadedDocuments: List<String>? = null,
 
-        var tags                        :List<TagModel>?                  = null,
+        var tags: List<TagModel>? = null,
 
-        var education                   :String?                        = null,
+        var education: String? = null,
 
-        var designation                 :String?                        = null,
+        var designation: String? = null,
 
         @Field("profile_url")
-        var profileUrl                  : String?                       = null,
+        var profileUrl: String? = null,
 
         @Field("profile_picture_url")
-        var profilePictureUrl           : String?                       = null,
+        var profilePictureUrl: String? = null,
 
         @Field("session_pricing")
-        var sessionPricing              : HashMap<String, Double>?      = null,
+        var sessionPricing: HashMap<String, Double>? = null,
 
-        var language                    : List<String>?                 = null,
+        var language: List<String>? = null,
 
         @Field("is_new")
-        var isNew                       : Boolean?                       = null,
+        var isNew: Boolean? = null,
 
         @Field("is_approved")
-        var isApproved                  : Boolean?                      = null,
-): AppEntity()
+        var isApproved: Boolean? = null,
+
+        var level: Int? = null,
+) : AppEntity()

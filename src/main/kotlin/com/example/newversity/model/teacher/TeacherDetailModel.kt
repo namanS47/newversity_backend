@@ -33,6 +33,7 @@ data class TeacherDetailModel(
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "IST")
         var nextAvailable: Date? = null,
         var isApproved: Boolean? = null,
+        var level: Int? = null,
 )
 
 object TeacherConverter {
@@ -61,6 +62,7 @@ object TeacherConverter {
             language = teacherDetailModel.language
             isNew = teacherDetailModel.isNew
             isApproved = teacherDetailModel.isApproved
+            level = teacherDetailModel.level
         }
         return entity
     }
@@ -88,6 +90,7 @@ object TeacherConverter {
             language = teacherDetails.language
             isNew = teacherDetails.isNew
             isApproved = teacherDetails.isApproved
+            level = teacherDetails.level
         }
         return model
     }

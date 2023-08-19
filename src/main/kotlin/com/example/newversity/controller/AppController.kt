@@ -7,6 +7,7 @@ import com.example.newversity.model.payment.phonepe.PhonePePGUrlRequestModel
 import com.example.newversity.model.teacher.*
 import com.example.newversity.services.CommonDetailService
 import com.example.newversity.services.Razorpay.RazorpayService
+import com.example.newversity.services.WebinarService
 import com.example.newversity.services.firebase.FirebaseMessagingService
 import com.example.newversity.services.phonepe.PhonePeService
 import com.example.newversity.services.teacher.*
@@ -28,7 +29,8 @@ class AppController(
         @Autowired val razorpayService: RazorpayService,
         @Autowired val firebaseMessagingService: FirebaseMessagingService,
         @Autowired val commonDetailService: CommonDetailService,
-        @Autowired val phonePeService: PhonePeService
+        @Autowired val phonePeService: PhonePeService,
+        @Autowired val webinarService: WebinarService
 ) {
 
     @GetMapping("/")
@@ -112,7 +114,7 @@ class AppController(
     }
 
     @GetMapping("/bankAccount")
-    fun getBankAccountDetails(@RequestHeader teacherId: String) : ResponseEntity<*> {
+    fun getBankAccountDetails(@RequestHeader teacherId: String): ResponseEntity<*> {
         return bankAccountService.getBankAccountDetails(teacherId)
     }
 
@@ -122,13 +124,13 @@ class AppController(
     }
 
     @GetMapping("/search/teacher")
-    fun getAllTeacherBySearchKeyword(@RequestParam searchKeyword: String) : ResponseEntity<*> {
+    fun getAllTeacherBySearchKeyword(@RequestParam searchKeyword: String): ResponseEntity<*> {
         return ResponseEntity.ok(teacherServices.getAllTeacherDetailsBySearchKeyword(searchKeyword))
     }
 
     @PostMapping("/pushNotification")
-    fun sendPushNotification() {
-        firebaseMessagingService.sendNotification("ckiJNLRhQm-gVTp8gBp5ik:APA91bGNIoZzci-8KJVYlSDSfDKcIG0RJR-LKJhhME3jzScTFc2D73LAx-vD_axlue30gVBqzlN1xnCi9iztvgBDXwhK2wyy3lLXLbAIv1XtKQ0UW1tUsW-P2UYHEIqJBZW7SjWEJhtD")
+    fun sendPushNotification(@RequestBody notificationDetails: NotificationDetailsModel) {
+        firebaseMessagingService.sendBulkNotification(notificationDetails)
     }
 
     @PostMapping("/fcmToken")
@@ -152,7 +154,12 @@ class AppController(
     }
 
     @GetMapping("/app/android/version")
-    fun getAppVersionDetails() : ResponseEntity<*> {
+    fun getAppVersionDetails(): ResponseEntity<*> {
         return commonDetailService.getAppVersionDetails()
+    }
+
+    @PostMapping("/webinar")
+    fun addWebinar(@RequestBody webinarModel: WebinarModel) : ResponseEntity<*> {
+        return webinarService.addWebinar(webinarModel)
     }
 }

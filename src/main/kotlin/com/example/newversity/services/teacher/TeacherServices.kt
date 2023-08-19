@@ -107,6 +107,9 @@ class TeacherServices(
             teacherDetailModel.language?.let {
                 teacher.language = it
             }
+            teacherDetailModel.level?.let {
+                teacher.level = it
+            }
             teacherDetailModel.isNew = false
             teacher = teacherRepository.save(teacher)
             return ResponseEntity.ok(TeacherConverter.toModel(teacher))

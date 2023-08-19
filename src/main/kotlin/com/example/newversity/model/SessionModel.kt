@@ -8,11 +8,11 @@ import com.example.newversity.model.student.StudentDetailModel
 import com.example.newversity.model.teacher.TeacherConverter
 import com.example.newversity.model.teacher.TeacherDetailModel
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import java.util.*
 
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class SessionModel (
         var id: String? = null,
         var teacherId: String? = null,
