@@ -106,32 +106,32 @@ class PhonePeService(
     }
 
     fun checkTransactionStatusApi(merchantTransactionId: String): ResponseEntity<*> {
-        val transactionDetails = phonePeTransactionRepository.findAllByMerchantTransactionId(merchantTransactionId)
-        if(transactionDetails.isPresent){
-            val transactionDetailsEntity = transactionDetails.get()
-
-            return if(transactionDetailsEntity.phonePeTransactionDetailsData?.code != "PAYMENT_PENDING") {
-                ResponseEntity.ok().body(transactionDetailsEntity)
-            } else {
-                val transactionStatus = fetchTransactionStatus(merchantTransactionId)
-                transactionDetailsEntity.phonePeTransactionDetailsData =
-                        PhonePeTransactionStatusResponseModelConvertor.toEntity(transactionStatus)
-
-                phonePeTransactionRepository.save(transactionDetailsEntity)
-
-                ResponseEntity.ok().body(transactionDetailsEntity)
-            }
-        } else {
+//        val transactionDetails = phonePeTransactionRepository.findAllByMerchantTransactionId(merchantTransactionId)
+//        if(transactionDetails.isPresent){
+//            val transactionDetailsEntity = transactionDetails.get()
+//
+//            return if(transactionDetailsEntity.phonePeTransactionDetailsData?.code != "PAYMENT_PENDING") {
+//                ResponseEntity.ok().body(transactionDetailsEntity)
+//            } else {
+//                val transactionStatus = fetchTransactionStatus(merchantTransactionId)
+//                transactionDetailsEntity.phonePeTransactionDetailsData =
+//                        PhonePeTransactionStatusResponseModelConvertor.toEntity(transactionStatus)
+//
+//                phonePeTransactionRepository.save(transactionDetailsEntity)
+//
+//                ResponseEntity.ok().body(transactionDetailsEntity)
+//            }
+//        } else {
             val transactionStatus = fetchTransactionStatus(merchantTransactionId)
             val phonePeTransactionStatusModel = PhonePeTransactionStatusModel(
                     merchantTransactionId = transactionStatus.data?.merchantTransactionId,
                     phonePeTransactionStatusResponse = transactionStatus
             )
             val phonePeTransactionStatusEntity = PhonePeTransactionStatusModelConvertor.toEntity(phonePeTransactionStatusModel)
-            phonePeTransactionRepository.save(phonePeTransactionStatusEntity)
+//            phonePeTransactionRepository.save(phonePeTransactionStatusEntity)
 
             return ResponseEntity.ok().body(phonePeTransactionStatusEntity)
-        }
+//        }
     }
 
     fun fetchTransactionStatus(merchantTransactionId: String): PhonePeTransactionStatusResponseModel {
