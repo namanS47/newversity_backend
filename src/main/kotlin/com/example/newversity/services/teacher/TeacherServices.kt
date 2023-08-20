@@ -130,7 +130,7 @@ class TeacherServices(
     }
 
     fun isTeacherValid(teacherDetailModel: TeacherDetailModel): Boolean {
-        var isTeacherValid = true
+        var isTeacherValid: Boolean
         teacherDetailModel.let {
             isTeacherValid = !(it.teacherId.isNullOrEmpty() || it.mobileNumber.isNullOrEmpty() || it.email.isNullOrEmpty() || it.name.isNullOrEmpty())
         }
@@ -140,7 +140,7 @@ class TeacherServices(
     fun getTeacherProfileCompletionPercentage(teacherId: String): ResponseEntity<*> {
         val teacherProfilePercentageModel = TeacherProfilePercentageModel()
         var completePercentage = 0
-        var suggestion: String = ""
+        var suggestion = ""
         val profileCompletionStageStatus: HashMap<ProfileCompletionStage, Boolean> = hashMapOf()
 
         val tagList = tagsService.getAllTagsWithTeacherId(teacherId, true)
@@ -331,7 +331,7 @@ class TeacherServices(
                 result.add(teacherModel)
             }
         }
-        return result
+        return result.sortedWith(compareBy(nullsLast()) { it.nextAvailable })
     }
 
     fun getAllTeacherDetailsBySearchKeyword(keyword: String): List<TeacherDetailModel> {
