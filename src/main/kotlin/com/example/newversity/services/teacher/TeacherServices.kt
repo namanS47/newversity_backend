@@ -359,7 +359,7 @@ class TeacherServices(
                 resultedTeacherDetails.add(teacherModel)
             }
         }
-        return (resultedTeacherDetails + getAllTeacherDetailsByTagKeyword).distinct()
+        return (resultedTeacherDetails + getAllTeacherDetailsByTagKeyword).distinct().sortedWith(compareBy(nullsLast()) { it.nextAvailable })
     }
 
 //    fun isTeacherApproved(teacherDetailModel: TeacherDetailModel):
