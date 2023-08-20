@@ -61,7 +61,7 @@ class TeacherServices(
                 teacher.name = it
             }
 
-            if(teacher.mobileNumber == null) {
+            if (teacher.mobileNumber == null) {
                 teacherDetailModel.mobileNumber?.let {
                     teacher.mobileNumber = it
                 }
@@ -172,7 +172,7 @@ class TeacherServices(
             suggestion = "Please add tags"
         }
 
-        if(checkForPricing(teacherId)) {
+        if (checkForPricing(teacherId)) {
             profileCompletionStageStatus[ProfileCompletionStage.Pricing] = true
             completePercentage += 10
         } else {
@@ -225,7 +225,7 @@ class TeacherServices(
 
     fun checkForPricing(teacherId: String): Boolean {
         val teacherDetailsEntity = teacherRepository.findByTeacherId(teacherId)
-        return if(teacherDetailsEntity.isPresent) {
+        return if (teacherDetailsEntity.isPresent) {
             val teacher = teacherDetailsEntity.get()
             !teacher.sessionPricing.isNullOrEmpty()
         } else {
@@ -325,7 +325,7 @@ class TeacherServices(
             val allAvailability = availabilityService.getAllAvailabilityByTeacherIdAndDate(it)
             if (teacher != null && teacher.isApproved == true) {
                 val teacherModel = TeacherConverter.toModel(teacher)
-                if(allAvailability.isNotEmpty()) {
+                if (allAvailability.isNotEmpty()) {
                     teacherModel.nextAvailable = allAvailability[0].startDate
                 }
                 result.add(teacherModel)
@@ -335,7 +335,7 @@ class TeacherServices(
     }
 
     fun getAllTeacherDetailsBySearchKeyword(keyword: String): List<TeacherDetailModel> {
-        if(keyword.isEmpty()) {
+        if (keyword.isEmpty()) {
             return listOf()
         }
         val allTeacherList = teacherRepository.findAll()
@@ -353,7 +353,7 @@ class TeacherServices(
             val teacherDetails = getCompleteTeacherDetails(it)
             if (teacherDetails != null && teacherDetails.isApproved == true) {
                 val teacherModel = TeacherConverter.toModel(teacherDetails)
-                if(allAvailability.isNotEmpty()) {
+                if (allAvailability.isNotEmpty()) {
                     teacherModel.nextAvailable = allAvailability[0].startDate
                 }
                 resultedTeacherDetails.add(teacherModel)
