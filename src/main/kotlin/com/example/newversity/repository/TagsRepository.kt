@@ -5,5 +5,5 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import java.util.Optional
 
 interface TagsRepository: MongoRepository<Tags, String> {
-    fun findByTagName(tagName: String): Optional<Tags>
+    fun findByTagNameIgnoreCase(tagName: String): Optional<Tags>
 }

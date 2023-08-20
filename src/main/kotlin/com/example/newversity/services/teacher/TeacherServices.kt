@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.lang.Exception
+import kotlin.collections.HashMap
 
 @Service
 class TeacherServices(
@@ -262,11 +263,11 @@ class TeacherServices(
 
     fun getAllAvailableTeacher(tagModelList: List<TagModel>?): List<TeacherDetailModel> {
         val availableTeacherListByTagName = getAllAvailableTeachersDetailByTagName(tagModelList)
-        if(availableTeacherListByTagName.isNotEmpty()) {
+        if (availableTeacherListByTagName.isNotEmpty()) {
             return availableTeacherListByTagName
         }
 
-        val allTeacherList= teacherRepository.findAll().filter { it.teacherId != null && it.isApproved == true }
+        val allTeacherList = teacherRepository.findAll().filter { it.teacherId != null && it.isApproved == true }
         val result = arrayListOf<TeacherDetailModel>()
 
         allTeacherList.forEach {
@@ -278,20 +279,20 @@ class TeacherServices(
                 it.education = educationDetails[0].name
             }
             if (tagList.isNotEmpty()) {
-                it.tags = tagList.filter {it1->
+                it.tags = tagList.filter { it1 ->
                     !it1.tagName.isNullOrEmpty()
                 }
             }
 
             val teacherModel = TeacherConverter.toModel(it)
 
-            if(allAvailability.isNotEmpty()) {
+            if (allAvailability.isNotEmpty()) {
                 teacherModel.nextAvailable = allAvailability[0].startDate
             }
             result.add(teacherModel)
         }
 
-        return result
+        return result.sortedWith(compareBy(nullsLast()) { it.nextAvailable })
     }
 
     fun getAllAvailableTeachersDetailByTagName(tagModelList: List<TagModel>?): List<TeacherDetailModel> {
@@ -347,6 +348,7 @@ class TeacherServices(
 
         val resultedTeacherDetails = arrayListOf<TeacherDetailModel>()
         resultedTeacherIds.forEach {
+
             val allAvailability = availabilityService.getAllAvailabilityByTeacherIdAndDate(it)
             val teacherDetails = getCompleteTeacherDetails(it)
             if (teacherDetails != null && teacherDetails.isApproved == true) {
@@ -357,7 +359,7 @@ class TeacherServices(
                 resultedTeacherDetails.add(teacherModel)
             }
         }
-        return resultedTeacherDetails + getAllTeacherDetailsByTagKeyword
+        return (resultedTeacherDetails + getAllTeacherDetailsByTagKeyword).distinct()
     }
 
 //    fun isTeacherApproved(teacherDetailModel: TeacherDetailModel):

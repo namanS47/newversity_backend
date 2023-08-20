@@ -71,7 +71,7 @@ class TagsService(
 
     fun mapNewTags(tagList: List<TagModel>?, teacherId: String?) {
         tagList?.forEach {
-            val tag = it.tagName?.let { it1 -> tagsRepository.findByTagName(it1) }
+            val tag = it.tagName?.let { it1 -> tagsRepository.findByTagNameIgnoreCase(it1) }
             if (tag != null) {
                 if (tag.isPresent) {
                     val list = tag.get().teacherTagDetailList ?: mutableMapOf()
@@ -100,7 +100,7 @@ class TagsService(
     fun addTagProofForTeacher(file: MultipartFile, tagName: String, teacherId: String): ResponseEntity<*> {
         return try {
             val fileUrl = awsS3Service.saveFile(file)
-            val tag = tagsRepository.findByTagName(tagName).get()
+            val tag = tagsRepository.findByTagNameIgnoreCase(tagName).get()
             if(tag.teacherTagDetailList?.contains(teacherId) == true) {
                 if(tag.teacherTagDetailList!![teacherId]?.documents.isNullOrEmpty()) {
                     val docs = ArrayList<String>()
@@ -121,7 +121,7 @@ class TagsService(
     }
 
     fun getTagByTagNameResponse(tagName: String) : ResponseEntity<*> {
-        val tag = tagsRepository.findByTagName(tagName).filter{
+        val tag = tagsRepository.findByTagNameIgnoreCase(tagName).filter{
             it.adminApprove == true
         }
         if(tag.isPresent) {
@@ -131,7 +131,7 @@ class TagsService(
     }
 
     fun getTagByTagName(tagName: String) : Tags? {
-        val tag = tagsRepository.findByTagName(tagName).filter {
+        val tag = tagsRepository.findByTagNameIgnoreCase(tagName).filter {
             it.adminApprove == true
         }
         if(tag.isPresent) {
@@ -142,7 +142,7 @@ class TagsService(
 
     fun approveTagsByTagName(tagList: List<TagModel>?) {
         tagList?.forEach {
-            val tag = it.tagName?.let { it1 -> tagsRepository.findByTagName(it1) }
+            val tag = it.tagName?.let { it1 -> tagsRepository.findByTagNameIgnoreCase(it1) }
             if (tag != null && tag.isPresent) {
                 val tagEntity = tag.get()
                 tagEntity.adminApprove = true
