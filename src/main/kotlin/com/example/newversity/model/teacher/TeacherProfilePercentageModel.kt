@@ -12,5 +12,5 @@ data class TeacherProfilePercentageModel(
 )
 
 enum class ProfileCompletionStage {
-    VerifiedTags, SelectTags, Pricing, Experience, Education, Profile
+    VerifiedTags, SelectTags, Pricing, Experience, Education, Profile, ProfilePicture
 }

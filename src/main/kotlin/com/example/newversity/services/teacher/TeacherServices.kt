@@ -196,9 +196,17 @@ class TeacherServices(
             suggestion = "Add Education Details"
         }
 
+        if(checkForProfilePicture(teacherId)) {
+            profileCompletionStageStatus[ProfileCompletionStage.ProfilePicture] = true
+            completePercentage += 10
+        } else {
+            profileCompletionStageStatus[ProfileCompletionStage.ProfilePicture] = false
+            suggestion = "Add Profile Picture"
+        }
+
         if (checkForPersonalInformation(teacherId)) {
             profileCompletionStageStatus[ProfileCompletionStage.Profile] = true
-            completePercentage += 20
+            completePercentage += 10
         } else {
             profileCompletionStageStatus[ProfileCompletionStage.Profile] = false
             suggestion = "Complete personal Info"
@@ -216,8 +224,18 @@ class TeacherServices(
         val teacherDetailsEntity = teacherRepository.findByTeacherId(teacherId)
         return if (teacherDetailsEntity.isPresent) {
             val teacher = teacherDetailsEntity.get()
-            !(teacher.name.isNullOrEmpty() || teacher.profilePictureUrl.isNullOrEmpty() || teacher.title.isNullOrEmpty()
+            !(teacher.name.isNullOrEmpty() ||  teacher.title.isNullOrEmpty()
                     || teacher.info.isNullOrEmpty() || teacher.location.isNullOrEmpty() || teacher.language.isNullOrEmpty())
+        } else {
+            false
+        }
+    }
+
+    fun checkForProfilePicture(teacherId: String): Boolean {
+        val teacherDetailsEntity = teacherRepository.findByTeacherId(teacherId)
+        return if (teacherDetailsEntity.isPresent) {
+            val teacher = teacherDetailsEntity.get()
+            !teacher.profilePictureUrl.isNullOrEmpty()
         } else {
             false
         }

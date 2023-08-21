@@ -4,6 +4,7 @@ import com.example.newversity.aws.s3.service.AwsS3Service
 import com.example.newversity.model.teacher.TeacherProfilePercentageModel
 import com.example.newversity.model.student.StudentConverter
 import com.example.newversity.model.student.StudentDetailModel
+import com.example.newversity.model.teacher.ProfileCompletionStage
 import com.example.newversity.repository.students.StudentRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -88,6 +89,7 @@ class StudentService(
 
     fun getStudentProfileCompletionPercentage(studentId: String): ResponseEntity<*> {
         val studentProfilePercentageModel = TeacherProfilePercentageModel()
+        val profileCompletionStageStatus: HashMap<ProfileCompletionStage, Boolean> = hashMapOf()
         var completePercentage = 0
         var suggestion = ""
 
@@ -111,18 +113,23 @@ class StudentService(
             if(!student.location.isNullOrEmpty()) {
                 completePercentage += 10
             } else {
+                profileCompletionStageStatus[ProfileCompletionStage.Profile] = false
                 suggestion = "Please provide location details"
             }
 
             if(!student.profilePictureUrl.isNullOrEmpty()) {
                 completePercentage += 20
+                profileCompletionStageStatus[ProfileCompletionStage.ProfilePicture] = true
             } else {
+                profileCompletionStageStatus[ProfileCompletionStage.ProfilePicture] = false
                 suggestion = "Please provide profile picture"
             }
 
             if(!student.tags.isNullOrEmpty()) {
+                profileCompletionStageStatus[ProfileCompletionStage.SelectTags] = true
                 completePercentage += 20
             } else {
+                profileCompletionStageStatus[ProfileCompletionStage.SelectTags] = false
                 suggestion = "Please select exams you are preparing for"
             }
 
@@ -144,6 +151,7 @@ class StudentService(
         studentProfilePercentageModel.apply {
             this.completePercentage = completePercentage
             this.suggestion = suggestion
+            this.profileCompletionStageStatus = profileCompletionStageStatus
         }
         return ResponseEntity.ok().body(studentProfilePercentageModel)
     }
