@@ -1,11 +1,11 @@
 package com.example.newversity.model.student
 
 import com.example.newversity.entity.students.Student
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
-class StudentDetailModel(
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
+data class StudentDetailModel(
         var studentId: String? = null,
         var name: String? = null,
         var mobileNumber: String? = null,
