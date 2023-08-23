@@ -21,7 +21,7 @@ class PromoCodeService(
         return if(promoCodeEntity.isPresent) {
             ResponseEntity.ok(PromoCodeConvertor.toModel(promoCodeEntity.get()))
         } else {
-            ResponseEntity.badRequest().body("Invalid promo code")
+            ResponseEntity.badRequest().body(mapOf("status" to "Invalid promo code"))
         }
     }
 }
