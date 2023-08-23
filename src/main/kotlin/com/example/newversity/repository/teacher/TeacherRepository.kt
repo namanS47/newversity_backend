@@ -7,4 +7,5 @@ import java.util.Optional
 interface TeacherRepository: MongoRepository<TeacherDetails, String> {
     fun findByName(id: String): Optional<TeacherDetails>
     fun findByTeacherId(id: String): Optional<TeacherDetails>
+    fun findByUserName(id: String): Optional<TeacherDetails>
 }

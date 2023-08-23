@@ -57,6 +57,10 @@ class TeacherServices(
         val teacherDetailsEntity = teacherRepository.findByTeacherId(teacherId)
         if (teacherDetailsEntity.isPresent) {
             var teacher = teacherDetailsEntity.get()
+            if(teacher.userName.isNullOrEmpty() && !teacherDetailModel.name.isNullOrEmpty()) {
+                teacher.userName =  generateUserName(teacherId)
+            }
+
             teacherDetailModel.name?.let {
                 teacher.name = it
             }
@@ -110,6 +114,9 @@ class TeacherServices(
             }
             teacherDetailModel.level?.let {
                 teacher.level = it
+            }
+            teacherDetailModel.userName?.let {
+                teacher.userName = it
             }
             teacherDetailModel.isNew = false
             teacher = teacherRepository.save(teacher)
@@ -381,4 +388,17 @@ class TeacherServices(
     }
 
 //    fun isTeacherApproved(teacherDetailModel: TeacherDetailModel):
+
+    fun generateUserName(teacherId: String) : String {
+        val teacherDetails = teacherRepository.findByTeacherId(teacherId).get()
+        val teacherName = teacherDetails.name
+
+        var teacherUserName = teacherName!!.replace(" ", "_")
+        var suffixNumber= 10
+        while(teacherRepository.findByUserName(teacherUserName+suffixNumber.toString()).isPresent) {
+            suffixNumber += 10
+        }
+        teacherUserName += suffixNumber.toString()
+        return teacherUserName
+    }
 }

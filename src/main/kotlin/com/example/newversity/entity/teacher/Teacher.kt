@@ -61,4 +61,7 @@ class TeacherDetails(
         var isApproved: Boolean? = null,
 
         var level: Int? = null,
+
+        @Field("user_name")
+        var userName: String? = null,
 ) : AppEntity()

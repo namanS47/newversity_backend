@@ -3,12 +3,12 @@ package com.example.newversity.model.teacher
 import com.example.newversity.entity.teacher.TeacherDetails
 import com.example.newversity.model.TagModel
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import java.util.*
 
 
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class TeacherDetailModel(
         var userId: String? = null,
         var teacherId: String? = null,
@@ -34,6 +34,7 @@ data class TeacherDetailModel(
         var nextAvailable: Date? = null,
         var isApproved: Boolean? = null,
         var level: Int? = null,
+        var userName: String? = null,
 )
 
 object TeacherConverter {
@@ -63,6 +64,7 @@ object TeacherConverter {
             isNew = teacherDetailModel.isNew
             isApproved = teacherDetailModel.isApproved
             level = teacherDetailModel.level
+            userName = teacherDetailModel.userName
         }
         return entity
     }
@@ -91,6 +93,7 @@ object TeacherConverter {
             isNew = teacherDetails.isNew
             isApproved = teacherDetails.isApproved
             level = teacherDetails.level
+            userName = teacherDetails.userName
         }
         return model
     }
