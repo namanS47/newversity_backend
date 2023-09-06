@@ -48,9 +48,23 @@ class TeacherServices(
         }
     }
 
-    fun getTeacher(teacherId: String): ResponseEntity<*> {
-        val teacherDetails = getCompleteTeacherDetails(teacherId)
-        return ResponseEntity.ok(teacherDetails?.let { TeacherConverter.toModel(it) })
+    fun getTeacher(teacherId: String?, username: String?): ResponseEntity<*> {
+        if(teacherId.isNullOrEmpty() && username.isNullOrEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("reason" to "invalid request"))
+        }
+
+        if(teacherId.isNullOrEmpty()) {
+            val teacherDetailsEntity = teacherRepository.findByUserName(username!!)
+            if(teacherDetailsEntity.isPresent) {
+                val teacherDetails = getCompleteTeacherDetails(teacherDetailsEntity.get().teacherId!!)
+                return ResponseEntity.ok(teacherDetails?.let { TeacherConverter.toModel(it) })
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("reason" to "teacher doesn't exist"))
+            }
+        } else {
+            val teacherDetails = getCompleteTeacherDetails(teacherId)
+            return ResponseEntity.ok(teacherDetails?.let { TeacherConverter.toModel(it) })
+        }
     }
 
     fun updateTeacher(teacherDetailModel: TeacherDetailModel, teacherId: String): ResponseEntity<*> {
@@ -58,7 +72,7 @@ class TeacherServices(
         if (teacherDetailsEntity.isPresent) {
             var teacher = teacherDetailsEntity.get()
             if(teacher.userName.isNullOrEmpty() && !teacherDetailModel.name.isNullOrEmpty()) {
-                teacher.userName =  generateUserName(teacherId)
+                teacher.userName =  generateUserName(teacherDetailModel.name!!)
             }
 
             teacherDetailModel.name?.let {
@@ -389,11 +403,10 @@ class TeacherServices(
 
 //    fun isTeacherApproved(teacherDetailModel: TeacherDetailModel):
 
-    fun generateUserName(teacherId: String) : String {
-        val teacherDetails = teacherRepository.findByTeacherId(teacherId).get()
-        val teacherName = teacherDetails.name
+    fun generateUserName(name: String) : String {
+//        val teacherDetails = teacherRepository.findByTeacherId(teacherId).get()
 
-        var teacherUserName = teacherName!!.replace(" ", "_")
+        var teacherUserName = name.replace(" ", "_")
         var suffixNumber= 10
         while(teacherRepository.findByUserName(teacherUserName+suffixNumber.toString()).isPresent) {
             suffixNumber += 10

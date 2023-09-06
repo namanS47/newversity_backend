@@ -42,8 +42,8 @@ class AppController(
     }
 
     @GetMapping("/teacher")
-    fun getTeacher(@RequestHeader("teacherId") teacherId: String): ResponseEntity<*> {
-        return teacherServices.getTeacher(teacherId)
+    fun getTeacher(@RequestHeader("teacherId") teacherId: String?, @RequestHeader("username") username: String?): ResponseEntity<*> {
+        return teacherServices.getTeacher(teacherId, username)
     }
 
     @PutMapping("/teacher")
