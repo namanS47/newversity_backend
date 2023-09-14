@@ -1,6 +1,7 @@
 package com.example.newversity.controller
 
 import com.example.newversity.model.*
+import com.example.newversity.model.common.RequestSessionModel
 import com.example.newversity.model.payment.OrderRequestModel
 import com.example.newversity.model.payment.phonepe.PhonePeCallbackResponseModel
 import com.example.newversity.model.payment.phonepe.PhonePePGUrlRequestModel
@@ -10,6 +11,7 @@ import com.example.newversity.services.Razorpay.RazorpayService
 import com.example.newversity.services.WebinarService
 import com.example.newversity.services.firebase.FirebaseMessagingService
 import com.example.newversity.services.phonepe.PhonePeService
+import com.example.newversity.services.student.RequestSessionService
 import com.example.newversity.services.teacher.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -30,7 +32,8 @@ class AppController(
         @Autowired val firebaseMessagingService: FirebaseMessagingService,
         @Autowired val commonDetailService: CommonDetailService,
         @Autowired val phonePeService: PhonePeService,
-        @Autowired val webinarService: WebinarService
+        @Autowired val webinarService: WebinarService,
+        @Autowired val requestSessionService: RequestSessionService
 ) {
 
     @GetMapping("/")
@@ -159,7 +162,37 @@ class AppController(
     }
 
     @PostMapping("/webinar")
-    fun addWebinar(@RequestBody webinarModel: WebinarModel) : ResponseEntity<*> {
+    fun addWebinar(@RequestBody webinarModel: WebinarModel): ResponseEntity<*> {
         return webinarService.addWebinar(webinarModel)
+    }
+
+    @GetMapping("/webinar")
+    fun getWebinar(@RequestHeader webinarId: String): ResponseEntity<*> {
+        return webinarService.getWebinarDetails(webinarId)
+    }
+
+    @GetMapping("/webinar/all")
+    fun getAllWebinar(): ResponseEntity<*> {
+        return webinarService.getAllFutureWebinar()
+    }
+
+    @PostMapping("/webinar/register")
+    fun registerWebinar(@RequestBody studentInfoModel: StudentInfoModel, @RequestHeader webinarId: String): ResponseEntity<*> {
+        return webinarService.registerInWebinar(studentInfoModel, webinarId)
+    }
+
+    @PostMapping("requestSession")
+    fun addSessionRequest(@RequestBody requestSessionModel: RequestSessionModel): ResponseEntity<*> {
+        return requestSessionService.addSessionRequest(requestSessionModel)
+    }
+
+    @PostMapping("/webinar/review")
+    fun addWebinarReview(@RequestBody studentInfoModel: StudentInfoModel, @RequestHeader webinarId: String): ResponseEntity<*> {
+        return webinarService.addWebinarReview(studentInfoModel, webinarId)
+    }
+
+    @GetMapping("/notifications")
+    fun getAllNotificationList(@RequestHeader userId: String): ResponseEntity<*> {
+        return firebaseMessagingService.getAllNotificationByUserId(userId)
     }
 }
