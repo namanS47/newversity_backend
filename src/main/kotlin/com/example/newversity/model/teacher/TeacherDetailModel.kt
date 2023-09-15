@@ -35,6 +35,7 @@ data class TeacherDetailModel(
         var isApproved: Boolean? = null,
         var level: Int? = null,
         var userName: String? = null,
+        var engagementType: List<EngagementType>? = null,
 )
 
 object TeacherConverter {
@@ -65,6 +66,7 @@ object TeacherConverter {
             isApproved = teacherDetailModel.isApproved
             level = teacherDetailModel.level
             userName = teacherDetailModel.userName
+            engagementType = teacherDetailModel.engagementType
         }
         return entity
     }
@@ -94,7 +96,12 @@ object TeacherConverter {
             isApproved = teacherDetails.isApproved
             level = teacherDetails.level
             userName = teacherDetails.userName
+            engagementType = teacherDetails.engagementType
         }
         return model
     }
+}
+
+enum class EngagementType {
+    OneOnOne, Webinar, AskMeAnything, Content
 }

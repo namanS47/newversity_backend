@@ -132,6 +132,9 @@ class TeacherServices(
             teacherDetailModel.userName?.let {
                 teacher.userName = it
             }
+            teacherDetailModel.engagementType?.let {
+                teacher.engagementType = it
+            }
             teacherDetailModel.isNew = false
             teacher = teacherRepository.save(teacher)
             return ResponseEntity.ok(TeacherConverter.toModel(teacher))

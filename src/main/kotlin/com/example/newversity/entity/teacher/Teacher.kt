@@ -1,6 +1,7 @@
 package com.example.newversity.entity.teacher
 
 import com.example.newversity.model.TagModel
+import com.example.newversity.model.teacher.EngagementType
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 import java.util.*
@@ -64,4 +65,7 @@ class TeacherDetails(
 
         @Field("user_name")
         var userName: String? = null,
+
+        @Field("engagement_type")
+        var engagementType: List<EngagementType>? = null,
 ) : AppEntity()
