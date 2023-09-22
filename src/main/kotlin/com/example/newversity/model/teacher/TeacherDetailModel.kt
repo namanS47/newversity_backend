@@ -1,11 +1,13 @@
 package com.example.newversity.model.teacher
 
+import com.example.newversity.entity.teacher.SharedContentEntity
 import com.example.newversity.entity.teacher.TeacherDetails
 import com.example.newversity.model.TagModel
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
@@ -36,6 +38,7 @@ data class TeacherDetailModel(
         var level: Int? = null,
         var userName: String? = null,
         var engagementType: List<EngagementType>? = null,
+        var sharedContent: ArrayList<SharedContent>? = null,
 )
 
 object TeacherConverter {
@@ -67,6 +70,7 @@ object TeacherConverter {
             level = teacherDetailModel.level
             userName = teacherDetailModel.userName
             engagementType = teacherDetailModel.engagementType
+            sharedContent = teacherDetailModel.sharedContent?.map { SharedContentConvertor.toEntity(it) }?.let { ArrayList(it) }
         }
         return entity
     }
@@ -97,6 +101,35 @@ object TeacherConverter {
             level = teacherDetails.level
             userName = teacherDetails.userName
             engagementType = teacherDetails.engagementType
+            sharedContent = teacherDetails.sharedContent?.map { SharedContentConvertor.toModel(it) }?.let { ArrayList(it) }
+        }
+        return model
+    }
+}
+
+data class SharedContent(
+        var fileUrl: List<String>? = null,
+        var title: String? = null,
+        var description: String? = null,
+)
+
+object SharedContentConvertor {
+    fun toEntity(sharedContent: SharedContent): SharedContentEntity {
+        val entity = SharedContentEntity()
+        entity.apply {
+            fileUrl = sharedContent.fileUrl
+            title = sharedContent.title
+            description = sharedContent.description
+        }
+        return entity
+    }
+
+    fun toModel(sharedContentEntity: SharedContentEntity): SharedContent {
+        val model = SharedContent()
+        model.apply {
+            fileUrl = sharedContentEntity.fileUrl
+            title = sharedContentEntity.title
+            description = sharedContentEntity.description
         }
         return model
     }

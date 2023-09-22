@@ -1,13 +1,11 @@
 package com.example.newversity.services.teacher
 
 import com.example.newversity.aws.s3.service.AwsS3Service
+import com.example.newversity.entity.teacher.SharedContentEntity
 import com.example.newversity.entity.teacher.Tags
 import com.example.newversity.entity.teacher.TeacherDetails
 import com.example.newversity.model.*
-import com.example.newversity.model.teacher.ProfileCompletionStage
-import com.example.newversity.model.teacher.TeacherConverter
-import com.example.newversity.model.teacher.TeacherDetailModel
-import com.example.newversity.model.teacher.TeacherProfilePercentageModel
+import com.example.newversity.model.teacher.*
 import com.example.newversity.repository.teacher.TeacherEducationRepository
 import com.example.newversity.repository.teacher.TeacherRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -150,6 +148,27 @@ class TeacherServices(
             addTeacher(teacherDetailModel, id)
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "Unable to upload file"))
+        }
+    }
+
+    fun saveTeacherContent(fileList: List<MultipartFile>,
+                           teacherId: String,
+                           fileTitle: String?, description: String?): ResponseEntity<*> {
+        val sharedContentModel = SharedContent(title = fileTitle, description = description)
+        val teacherDetailsEntity = teacherRepository.findByTeacherId(teacherId)
+        return if(teacherDetailsEntity.isPresent) {
+            val teacherDetails = teacherDetailsEntity.get()
+            val fileUrl = fileList.map {
+                awsS3Service.saveFile(it)
+            }
+            sharedContentModel.fileUrl = fileUrl
+            teacherDetails.sharedContent?.add(SharedContentConvertor.toEntity(sharedContentModel)) ?: run {
+                teacherDetails.sharedContent = arrayListOf(SharedContentConvertor.toEntity(sharedContentModel))
+            }
+            teacherRepository.save(teacherDetails)
+            ResponseEntity.ok().body(TeacherConverter.toModel(teacherDetails))
+        } else {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("status" to "teacher id doesn't exist"))
         }
     }
 

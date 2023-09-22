@@ -1,11 +1,13 @@
 package com.example.newversity.controller
 
 import com.example.newversity.model.*
+import com.example.newversity.model.common.BlogDetailsModel
 import com.example.newversity.model.common.RequestSessionModel
 import com.example.newversity.model.payment.OrderRequestModel
 import com.example.newversity.model.payment.phonepe.PhonePeCallbackResponseModel
 import com.example.newversity.model.payment.phonepe.PhonePePGUrlRequestModel
 import com.example.newversity.model.teacher.*
+import com.example.newversity.services.BlogService
 import com.example.newversity.services.CommonDetailService
 import com.example.newversity.services.Razorpay.RazorpayService
 import com.example.newversity.services.WebinarService
@@ -33,7 +35,8 @@ class AppController(
         @Autowired val commonDetailService: CommonDetailService,
         @Autowired val phonePeService: PhonePeService,
         @Autowired val webinarService: WebinarService,
-        @Autowired val requestSessionService: RequestSessionService
+        @Autowired val requestSessionService: RequestSessionService,
+        @Autowired val blogService: BlogService
 ) {
 
     @GetMapping("/")
@@ -194,5 +197,31 @@ class AppController(
     @GetMapping("/notifications")
     fun getAllNotificationList(@RequestHeader userId: String): ResponseEntity<*> {
         return firebaseMessagingService.getAllNotificationByUserId(userId)
+    }
+
+    @PostMapping("/teacher/content")
+    fun saveTeacherContent(@RequestPart fileList: List<MultipartFile>, @RequestPart teacherId: String,
+                           @RequestPart fileTitle: String?, @RequestPart description: String?): ResponseEntity<*> {
+        return teacherServices.saveTeacherContent(fileList, teacherId, fileTitle, description)
+    }
+
+    @PostMapping("/blog")
+    fun addBlog(@RequestBody blogDetailsModel: BlogDetailsModel) : ResponseEntity<*> {
+        return blogService.addBlog(blogDetailsModel)
+    }
+
+    @GetMapping("/blog")
+    fun getBlog(@RequestParam id: String): ResponseEntity<*> {
+        return blogService.getBlog(id)
+    }
+
+    @GetMapping("/blog/list")
+    fun getBlogsList(): ResponseEntity<*> {
+        return blogService.getAllBlogs()
+    }
+
+    @PostMapping("blog/image")
+    fun addBlogImage(@RequestPart file: MultipartFile, @RequestPart blogId: String): ResponseEntity<*> {
+        return blogService.blogFeaturedImage(file, blogId)
     }
 }
